@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.his.mapper.EnUrlMapper">
+
+  <!-- 添加数据 -->
+  <insert id="addData" parameterType="com.alpha.his.pojo.dto.EnUrlDTO">
+    INSERT INTO `url_en` (`url`, `en_url`, `create_time`)
+      VALUES (#{url,jdbcType=VARCHAR}, #{enUrl,jdbcType=VARCHAR}, now())
+  </insert>
+
+  <!-- 获取数据 -->
+  <select id="getData" parameterType="java.lang.String" resultType="com.alpha.his.pojo.dto.EnUrlDTO">
+    select `url`, `en_url` enUrl from url_en t where t.en_url = #{enUrl,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.user.pojo.UserDiagnosisOutcome">
+
+
+    <select id="queryByDiagnosisId" parameterType="HashMap" resultType="DataRecord">
+      select udo.*,ddr.system_code from user_diagnosis_outcome udo
+        left join diagnosis_disease_rate ddr
+        on udo.disease_code = ddr.disease_code
+        where diagnosis_id=#{diagnosisId} order by weight DESC LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="queryByDiseaseCode" parameterType="HashMap" resultType="DataRecord">
+      select * from user_diagnosis_outcome where diagnosis_id=#{diagnosisId} and disease_code=#{diseaseCode}
+    </select>
+
+    <delete id="deleteByDiagnosisId" parameterType="HashMap">
+        delete from user_diagnosis_outcome where diagnosis_id=#{diagnosisId}
+    </delete>
+
+    <select id="listTop5Disease" parameterType="HashMap" resultType="DataRecord">
+        SELECT udo.*,ddr.system_code from
+        (
+        SELECT * from user_diagnosis_outcome udo where diagnosis_id = #{diagnosisId}
+        ) udo
+        INNER JOIN
+        diagnosis_disease_rate ddr
+        ON
+        udo.disease_code = ddr.disease_code
+        WHERE ddr.main_symp_code = #{sympCode} group by udo.disease_code ORDER BY udo.probability desc limit 5
+    </select>
+</mapper>

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alpha.commons.mapper.DiagnosisPastmedicalHistoryMapper">
+	<resultMap id="pastmedicalHistory" type="com.alpha.server.rpc.diagnosis.pojo.DiagnosisPastmedicalHistory">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="disease_code" jdbcType="VARCHAR" property="diseaseCode" />
+	    <result column="disease_name" jdbcType="VARCHAR" property="diseaseName" />
+	    <result column="popu_name" jdbcType="VARCHAR" property="popuName" />
+	    <result column="symbol" jdbcType="VARCHAR" property="symbol" />
+	    <result column="gender" jdbcType="INTEGER" property="gender" />
+	    <result column="min_age" jdbcType="DOUBLE" property="minAge" />
+	    <result column="max_age" jdbcType="DOUBLE" property="maxAge" />
+	    <result column="default_order" jdbcType="INTEGER" property="defaultOrder" />
+	    <result column="description" jdbcType="VARCHAR" property="description" />
+	    <result column="special_period" jdbcType="INTEGER" property="specialPeriod" />
+	    <result column="is_renal" jdbcType="BIT" property="isRenal" />
+	    <result column="is_liver" jdbcType="BIT" property="isLiver" />
+	    <result column="threshold" jdbcType="BIGINT" property="threshold" />
+	    <result column="user_select_count" jdbcType="BIGINT" property="userSelectCount" />
+	    <result column="incre_flag" jdbcType="VARCHAR" property="increFlag" />
+	    <result column="opera_flag" jdbcType="VARCHAR" property="operaFlag" />
+	    <result column="operate_type" jdbcType="VARCHAR" property="operateType" />
+	    <result column="data_version" jdbcType="INTEGER" property="dataVersion" />
+	    <result column="version_evolution" jdbcType="VARCHAR" property="versionEvolution" />
+	    <result column="source_" jdbcType="VARCHAR" property="source" />
+	    <result column="version_" jdbcType="VARCHAR" property="version" />
+	    <result column="creator" jdbcType="VARCHAR" property="creator" />
+	    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	    <result column="reviewer" jdbcType="VARCHAR" property="reviewer" />
+	    <result column="review_time" jdbcType="TIMESTAMP" property="reviewTime" />
+	</resultMap>
+	
+	<resultMap type="com.alpha.self.diagnosis.pojo.vo.DiseaseVo" id="diseaseVo">
+		<result column="disease_code" jdbcType="VARCHAR" property="diseaseCode"/>
+		<result column="disease_name" jdbcType="VARCHAR" property="diseaseName"/>
+		<result column="description" jdbcType="VARCHAR" property="description"/>
+	</resultMap>
+	
+
+	<select id="querySelectedPastmedicalHistory" parameterType="HashMap" resultType="DataRecord">
+		SELECT disease_code,disease_name,description from diagnosis_pastmedical_history a where a.disease_code in
+		<foreach collection="userPastmedicalHistoryCode" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach> 
+		<!-- 改需求，不需要既往史小类 -->
+		<!-- union all
+		SELECT disease_code,disease_name,description from diagnosis_subpastmedical_history a where a.disease_code in
+		<foreach collection="userPastmedicalHistoryCode" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>  -->
+		union all
+		SELECT answer_value as disease_code,content as disease_name,'' as description from basic_answer where basic_question_id = 1006 and answer_value in
+		<foreach collection="userPastmedicalHistoryCode" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach> 
+	</select>
+
+	<update id="updateUserSelectCount" parameterType="HashMap">
+		UPDATE diagnosis_pastmedical_history set user_select_count = IFNULL(user_select_count,0) + 1
+		<where>
+			<if test="codeList != null">
+				and disease_code in
+				<foreach collection="codeList" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+	</update>
+
+	<select id="queryPastmedicalHistory" resultType="DataRecord" parameterType="HashMap">
+		SELECT
+			p.id,
+			p.disease_code,
+			p.disease_name,
+			p.popu_name,
+			p.symbol,
+			p.gender,
+			p.min_age,
+			p.max_age,
+			p.default_order,
+			p.description,
+			p.special_period,
+			p.is_renal,
+			p.is_liver,
+			p.threshold,
+			p.is_common,
+			p.user_select_count,
+			p.incre_flag,
+			p.opera_flag,
+			p.operate_type,
+			p.data_version,
+			p.version_evolution,
+			p.source_,
+			p.version_,
+			p.creator,
+			p.create_time,
+			p.reviewer,
+			p.review_time,
+			p.medical_data_status,
+			p.it_data_status,
+			p.object_version,
+			sp.system_code
+		FROM diagnosis_symptoms_pastmedical sp
+		INNER JOIN diagnosis_pastmedical_history p ON sp.disease_code=p.disease_code
+		WHERE
+			sp.symp_code = #{sympCode}
+			<if test="gender != null and gender != ''">
+				<![CDATA[
+					and (p.gender = #{gender} or p.gender is null or p.gender = 0)
+				]]>
+			</if>
+			<if test="specialPeriod != null and specialPeriod != ''">
+				and (p.special_period = #{specialPeriod} or p.special_period is null)
+			</if>
+			<if test="age != null and age!=''">
+				<![CDATA[
+					and ((p.min_age is null and p.max_age is null)
+					or (p.min_age <= #{age} and p.max_age >= #{age}))
+				]]>
+			</if>
+			<if test="userPastmedicalHistoryCode != null">
+				and p.disease_code in
+				<foreach item="item" index="index" collection="userPastmedicalHistoryCode" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="userPastmedicalHistoryCodeNotIn != null">
+				and p.disease_code not in
+				<foreach item="item" index="index" collection="userPastmedicalHistoryCodeNotIn" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="liverAndRenal != null and liverAndRenal != ''">
+				and (p.is_liver = #{liverAndRenal} or p.is_renal = #{liverAndRenal})
+			</if>
+			<if test="diseaseName != null and diseaseName != ''">
+				and p.disease_name like concat(concat('%',#{diseaseName}),'%')
+			</if>
+			<if test="threshold != null and threshold != ''">
+				and p.threshold = #{threshold} and p.user_select_count > p.threshold
+			</if>
+			<if test="sympCode != null and sympCode != ''">
+				and sp.symp_code = #{sympCode}
+			</if>
+			GROUP BY p.disease_code order by p.max_age,IFNULL(p.default_order,1000)
+
+			<if test="limitSize != null and limitSize != ''">
+				limit 0,#{limitSize}
+			</if>
+	</select>
+
+	<select id="queryByMainSympCodeAndSystemCode" resultType="DataRecord" parameterType="HashMap">
+		select
+		dph.id,
+		dph.disease_code,
+		dph.disease_name,
+		dph.popu_name,
+		dph.symbol,
+		dph.gender,
+		dph.min_age,
+		dph.max_age,
+		dph.default_order,
+		dph.description,
+		dph.special_period,
+		dph.is_renal,
+		dph.is_liver,
+		dph.threshold,
+		dph.is_common,
+		dph.user_select_count,
+		dph.incre_flag,
+		dph.opera_flag,
+		dph.operate_type,
+		dph.data_version,
+		dph.version_evolution,
+		dph.source_,
+		dph.version_,
+		dph.creator,
+		dph.create_time,
+		dph.reviewer,
+		dph.review_time,
+		dph.medical_data_status,
+		dph.it_data_status,
+		dph.object_version,
+		dsp.system_code
+		from diagnosis_symptoms_pastmedical dsp
+		INNER JOIN diagnosis_pastmedical_history dph
+		on dsp.disease_code = dph.disease_code
+		where dsp.symp_code = #{mainSympCode}
+		<if test="systemCode != null">
+			AND dsp.system_code = #{systemCode}
+		</if>
+		GROUP BY disease_code
+	</select>
+
+	<select id="searchPastmedicalHistory" resultType="DataRecord" parameterType="HashMap">
+		SELECT
+		id,
+		disease_code,
+		disease_name,
+		popu_name,
+		symbol,
+		gender,
+		min_age,
+		max_age,
+		default_order,
+		description,
+		special_period,
+		is_renal,
+		is_liver,
+		threshold,
+		is_common,
+		user_select_count,
+		incre_flag,
+		opera_flag,
+		operate_type,
+		data_version,
+		version_evolution,
+		source_,
+		version_,
+		creator,
+		create_time,
+		reviewer,
+		review_time,
+		medical_data_status,
+		it_data_status,
+		object_version
+		FROM diagnosis_pastmedical_history
+		WHERE
+		1=1
+		<if test="diseaseName != null and diseaseName != ''">
+			and disease_name like concat('%',#{diseaseName},'%')
+		</if>
+		<if test="diseaseName != null and diseaseName != ''">
+			ORDER BY
+			(case
+			when disease_name = #{diseaseName} then 1
+			when disease_name like concat(#{diseaseName},'%') then 2
+			when disease_name like concat('%',#{diseaseName}) then 3
+			when disease_name like concat('%',#{diseaseName},'%') then 4
+			else 5
+			end )
+		</if>
+		<if test="limitSize != null and limitSize != ''">
+			limit 0,#{limitSize}
+		</if>
+	</select>
+</mapper>

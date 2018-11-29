@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.commons.core.mapper.HisRegisterYyghMapper">
+    <insert id="insertBatch" parameterType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        INSERT ignore INTO
+        his_register_yygh(out_patient_no,card_no,patient_name,pno,yno,sex,birthday,patient_card_no,
+        dept_name,doctor_name,visit_time,phone,phone_new,status,create_time,`type`)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.outPatientNo},#{item.cardNo},#{item.patientName},#{item.pno},#{item.yno},#{item.sex},
+            #{item.birthday},#{item.patientCardNo},#{item.deptName},#{item.doctorName},#{item.visitTime},#{item.phone},
+            #{item.phoneNew},0,#{item.createTime},#{item.type}
+            )
+        </foreach>
+    </insert>
+
+    <select id="listNeedPushRecord" resultType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        SELECT * from his_register_yygh where `status` = 0 and STR_TO_DATE(visit_time,'%Y-%m-%d') >= STR_TO_DATE(now(),'%Y-%m-%d')
+    </select>
+
+    <select id="getOneByOutPatient" resultType="com.alpha.commons.core.pojo.HisRegisterYygh"
+            parameterType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        SELECT * from his_register_yygh where out_patient_no = #{outPatientNo} or card_no =#{outPatientNo} limit 1
+    </select>
+
+    <!--查询预约号已来线下取号的记录-->
+    <select id="listAppointmentWhichRegistered" resultType="com.alpha.commons.core.pojo.HisRegisterYygh"
+            parameterType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        SELECT * from his_register_yygh hry where hry.out_patient_no = #{outPatientNo} and hry.type = 3 and hry.yno = #{yno}
+    </select>
+
+    <select id="listPatientRegisters" resultType="com.alpha.commons.core.pojo.HisRegisterYygh"
+            parameterType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        SELECT * from (
+        <!--现场号-->
+        SELECT * from his_register_yygh hry where (hry.type = 3 or hry.type = 1) and
+        STR_TO_DATE(hry.visit_time,'%Y-%m-%d') >= STR_TO_DATE(now(),'%Y-%m-%d') and hry.out_patient_no = #{outPatientNo}
+        UNION ALL
+        <!--没有被取号的预约号-->
+        SELECT * from his_register_yygh hry where hry.out_patient_no = #{outPatientNo} and hry.type = 2 and
+        STR_TO_DATE(hry.visit_time,'%Y-%m-%d') >= STR_TO_DATE(now(),'%Y-%m-%d') and not EXISTS (
+        SELECT 1 from his_register_yygh hry2 where hry.yno = hry2.yno and hry2.type = 3 and hry2.out_patient_no =
+        #{outPatientNo} and STR_TO_DATE(hry2.visit_time,'%Y-%m-%d') >= STR_TO_DATE(now(),'%Y-%m-%d')
+        )
+        ) t order by visit_time
+    </select>
+
+    <!-- 批量更新数据 -->
+    <update id="batchUpdateStatus" parameterType="java.util.List">
+        <foreach collection="list" separator=";" item="hhy" index="index">
+            update his_register_yygh t
+            <set>
+                t.`status` = #{hhy.status}
+            </set>
+            where t.pno = #{hhy.pno}
+        </foreach>
+    </update>
+    <select id="getTestAccount" resultType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        SELECT * from his_register_yygh WHERE  STR_TO_DATE(create_time,'%Y-%m-%d') >= STR_TO_DATE(now(),'%Y-%m-%d') order by create_time limit 20
+    </select>
+
+    <!--明天的预约记录-->
+    <select id="getAppointmentUserForTomorrow" resultType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        SELECT * from his_register_yygh where type = 2 and STR_TO_DATE(visit_time, '%Y-%m-%d') = DATE_SUB(CURDATE(),INTERVAL -1 day)
+    </select>
+
+    <!--就诊当天的预约记录-->
+    <select id="getAppointmentUserForToday" resultType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        SELECT * from his_register_yygh where type = 2 and STR_TO_DATE(visit_time, '%Y-%m-%d') = CURDATE()
+    </select>
+
+    <!--就诊当天未取号的预约记录-->
+    <select id="getAppointmentUserWithoutRegister" resultType="com.alpha.commons.core.pojo.HisRegisterYygh"
+            parameterType="com.alpha.commons.core.pojo.HisRegisterYygh">
+        SELECT * FROM his_register_yygh hry WHERE hry.out_patient_no = #{outPatientNo} AND hry.type = 2 AND STR_TO_DATE(hry.visit_time, '%Y-%m-%d') = CURDATE()
+        AND NOT EXISTS (SELECT 1 FROM his_register_yygh hry2 WHERE hry.yno = hry2.yno AND hry2.type = 3)
+    </select>
+</mapper>

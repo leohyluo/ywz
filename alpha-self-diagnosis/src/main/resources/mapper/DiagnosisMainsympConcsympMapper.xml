@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainsympConcsymp">
+
+
+    <!-- <select id="queryDiagnosisMainsympConcsymp" parameterType="HashMap" resultType="DataRecord">
+        select dmcs.id,dmcs.main_symp_code,dmcs.disease_code,dmcs.conc_symp_code,dmcs.symp_spec,dmcs.rate,dmcs.default_order,
+        dcs.symp_name,dcs.popu_name,dcs.symbol,dcs.gender,dcs.min_age,dcs.max_age,dcs.display_type
+        from diagnosis_mainsymp_concsymp dmcs INNER JOIN diagnosis_concomitant_symptom dcs on(dcs.symp_code=dmcs.conc_symp_code)
+        where dmcs.main_symp_code=#{mainSympCode} AND IFNULL(dmcs.operate_type,'') != 'D'
+    </select> -->
+	<select id="queryCommonSymptom" parameterType="HashMap" resultType="DataRecord">
+		SELECT
+		dmcs.id,
+		dmcs.main_symp_code,
+		dmcs.disease_code,
+		dmcs.conc_symp_code,
+		dmcs.symp_spec,
+		dmcs.rate,
+		dmcs.default_order,
+		dcs.symp_name,
+		dcs.popu_name,
+		dcs.symbol,
+		dcs.gender,
+		dcs.min_age,
+		dcs.max_age,
+		dcs.is_common,
+		dcs.display_type,
+		dmcs.type_flag
+		FROM
+		diagnosis_mainsymp_concsymp dmcs
+		INNER JOIN diagnosis_concomitant_symptom dcs ON (
+		dcs.symp_code = dmcs.conc_symp_code and dmcs.type_flag = 1
+		)
+		WHERE
+		dmcs.main_symp_code = #{mainSympCode}
+		AND IFNULL(dmcs.operate_type, '') not in ('D','H')
+		AND IFNULL(dcs.operate_type, '') not in ('D','H')
+		group BY conc_symp_code
+		ORDER BY is_common DESC,default_order
+	</select>
+
+    <select id="queryDiagnosisMainsympConcsymp" parameterType="HashMap" resultType="DataRecord">
+        SELECT
+			dmcs.id,
+			dmcs.main_symp_code,
+			dmcs.disease_code,
+			dmcs.conc_symp_code,
+			dmcs.symp_spec,
+			dmcs.rate,
+			dmcs.default_order,
+			dcs.symp_name,
+			dcs.popu_name,
+			dcs.symbol,
+			dcs.gender,
+			dcs.min_age,
+			dcs.max_age,
+			dcs.is_common,
+			dcs.display_type,
+			dmcs.type_flag
+		FROM
+			diagnosis_mainsymp_concsymp dmcs
+		INNER JOIN diagnosis_concomitant_symptom dcs ON (
+			dcs.symp_code = dmcs.conc_symp_code
+		)
+		INNER JOIN diagnosis_disease_rate ddr
+		ON(
+			dmcs.disease_code = ddr.disease_code
+			AND dmcs.main_symp_code = ddr.main_symp_code
+		)
+		WHERE
+			dmcs.main_symp_code = #{mainSympCode}
+		AND IFNULL(dmcs.operate_type, '') not in ('D','H')
+		AND IFNULL(ddr.operate_type, '') not in ('D','H')
+		AND IFNULL(dcs.operate_type, '') not in ('D','H')
+    </select>
+
+	<!-- 查询主症状下常见的伴随症状 -->
+	<select id="queryCommonDiagnosisMainsympConcsymp" parameterType="HashMap" resultType="DataRecord">
+		SELECT
+		dmcs.id,
+		dmcs.main_symp_code,
+		dmcs.disease_code,
+		dmcs.conc_symp_code,
+		dmcs.symp_spec,
+		dmcs.rate,
+		dmcs.default_order,
+		dcs.symp_name,
+		dcs.popu_name,
+		dcs.symbol,
+		dcs.gender,
+		dcs.min_age,
+		dcs.max_age,
+		dcs.display_type
+		FROM
+		diagnosis_mainsymp_concsymp dmcs
+		INNER JOIN diagnosis_concomitant_symptom dcs ON (
+		dcs.symp_code = dmcs.conc_symp_code
+		)
+		INNER JOIN diagnosis_disease_rate ddr
+		ON(
+		dmcs.disease_code = ddr.disease_code
+		AND dmcs.main_symp_code = ddr.main_symp_code
+		)
+		WHERE
+		dmcs.main_symp_code = #{mainSympCode}
+		AND dcs.is_common = 1
+		AND IFNULL(dmcs.operate_type, '') not in ('D','H')
+		AND IFNULL(ddr.operate_type, '') not in ('D','H')
+		AND IFNULL(dcs.operate_type, '') not in ('D','H')
+	</select>
+    
+    <select id="queryConcsymp" parameterType="HashMap" resultType="DataRecord">
+        select dmcs.id,dmcs.main_symp_code,dmcs.disease_code,dmcs.conc_symp_code,dmcs.symp_spec,dmcs.rate,dmcs.default_order,
+        dcs.symp_name,dcs.popu_name,dcs.symbol,dcs.gender,dcs.min_age,dcs.max_age,dcs.display_type
+        from diagnosis_mainsymp_concsymp dmcs INNER JOIN diagnosis_concomitant_symptom dcs on(dcs.symp_code=dmcs.conc_symp_code)
+        where dmcs.main_symp_code=#{mainSympCode} and dmcs.operate_type not in('D','H') group by dmcs.conc_symp_code
+    </select>
+
+    <select id="queryByconcSympCodes" parameterType="HashMap" resultType="DataRecord">
+        select *  from diagnosis_mainsymp_concsymp dmcs
+        where dmcs.main_symp_code=#{mainSympCode} and dmcs.conc_symp_code IN
+        <foreach item="item" index="index" collection="concSympCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+	<!--获取伴随症状与疾病的关系-->
+	<select id="queryByMainSymptomAndconcSympCodes" parameterType="HashMap" resultType="DataRecord">
+		select dmcs.*  from diagnosis_mainsymp_concsymp dmcs INNER JOIN diagnosis_disease_rate ddr
+		ON dmcs.disease_code = ddr.disease_code AND dmcs.main_symp_code = ddr.main_symp_code
+		where dmcs.main_symp_code=#{mainSympCode} and dmcs.conc_symp_code IN
+		<foreach item="item" index="index" collection="concSympCodes" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND IFNULL(dmcs.operate_type, '') not in ('D','H')
+		AND IFNULL(ddr.operate_type, '') not in ('D','H')
+	</select>
+
+	<select id="queryByconcSympCodesWithoutMainSymp" parameterType="HashMap" resultType="DataRecord">
+		select *  from diagnosis_mainsymp_concsymp dmcs
+		where dmcs.conc_symp_code IN
+		<foreach item="item" index="index" collection="concSympCodes" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+
+	<!--根据名字查伴随症状-->
+	<select id="queryByconcSympName" parameterType="HashMap" resultType="DataRecord">
+		SELECT dmc.* from diagnosis_concomitant_symptom dcs
+		INNER JOIN diagnosis_mainsymp_concsymp dmc
+		ON dcs.symp_code = dmc.conc_symp_code
+		INNER JOIN diagnosis_disease_rate ddr
+		ON dmc.disease_code = ddr.disease_code AND dmc.main_symp_code = ddr.main_symp_code
+		WHERE dmc.main_symp_code = #{mainSympCode}
+		AND dcs.symp_name in
+		<foreach item="item" index="index" collection="concSympNames" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND ifnull(ddr.operate_type,'') NOT in ('D','H')
+		AND ifnull(dmc.operate_type,'') NOT in ('D', 'H')
+		AND ifnull(dcs.operate_type,'') NOT in ('D', 'H')
+		AND dmc.rate > 0
+	</select>
+
+	<!--查询主症状下权重最高的伴随症状-->
+	<select id="getMaxWeightConcSympByMainCode" parameterType="HashMap" resultType="DataRecord">
+		select *  from diagnosis_mainsymp_concsymp dmcs where dmcs.main_symp_code=#{mainSympCode} ORDER BY dmcs.rate desc limit 1
+	</select>
+    
+    <select id="queryConcSympByCodes" parameterType="HashMap" resultType="DataRecord">
+       SELECT
+			dms.symp_code,
+			dms.symp_name,
+			dmc.disease_code,
+			dcs.symp_name AS 'answer_title',
+			dmc.conc_symp_code AS 'answer_code',
+			dmc.rate AS 'answer_weight',
+			dmq.question_code,
+			dmq.question_type,
+			dmq.title AS 'question_title',
+			ddmq.weight AS 'question_weight',
+			dms.standard_deviation AS 'question_standard_deviation',
+			dmq.standard_deviation AS 'answer_standard_deviation'
+			-- ddmq.weight AS 'answer_weight'
+		FROM
+			diagnosis_mainsymp_concsymp dmc
+		LEFT JOIN diagnosis_main_symptoms dms ON dmc.main_symp_code = dms.symp_code
+		LEFT JOIN diagnosis_disease_rate ddr ON (dmc.disease_code = ddr.disease_code and ddr.main_symp_code = dmc.main_symp_code)
+		LEFT JOIN diagnosis_concomitant_symptom dcs ON dmc.conc_symp_code = dcs.symp_code
+		LEFT JOIN diagnosis_mainsymp_question dmq ON dmc.main_symp_code = dmq.main_symp_code
+		LEFT JOIN diagnosis_disease_mainsym_question ddmq ON (
+			dmc.main_symp_code = ddmq.main_sym_code
+			AND dmc.disease_code = ddmq.disease_code
+			AND dmq.question_code = ddmq.question_code
+		)
+		WHERE
+			dmc.main_symp_code = #{mainSympCode}
+		AND dmc.conc_symp_code IN 
+		<foreach item="item" index="index" collection="concSympCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>			
+		AND dmq.question_type = 102
+		AND IFNULL(dmc.operate_type, '') NOT IN ('D','H')
+		AND IFNULL(ddr.operate_type,'') NOT IN ('D','H')
+		AND dmc.rate != 0
+    </select>
+    
+
+</mapper>

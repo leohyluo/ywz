@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.push.mapper.HisRegisterRecordMapper" >
+
+    <!--根据挂号记录-->
+    <select id="getByPno" resultType="com.alpha.push.domain.HisRegisterRecord" parameterType="HashMap">
+        select * from his_register_record where pno = #{pno}
+    </select>
+
+    <update id="update" parameterType="com.alpha.push.domain.HisRegisterRecord">
+        update his_register_record t set t.fetch_complete = #{fetchComplete} and t.update_time = now()
+    </update>
+
+    <!--根据挂号记录-->
+    <select id="getByOutPatientNoAndPno" resultType="com.alpha.push.domain.HisRegisterRecord" parameterType="HashMap">
+        select * from his_register_record where out_patient_no = #{outPatientNo} and pno = #{pno}
+    </select>
+
+    <insert id="insert" parameterType="java.util.ArrayList">
+        insert into his_register_record (
+            out_patient_no,
+            patient_name,
+            birthday,
+            patient_card_no,
+            dep_name,
+            doctor_name,
+            visit_time,
+            create_time
+        )VALUES
+        <foreach collection="list" item="hisRegisterRecord" separator=",">
+            (
+                #{hisRegisterRecord.outPatientNo,jdbcType=VARCHAR},
+                #{hisRegisterRecord.patientName,jdbcType=VARCHAR},
+                #{hisRegisterRecord.birthday,jdbcType=VARCHAR},
+                #{hisRegisterRecord.idCard,jdbcType=VARCHAR},
+                #{hisRegisterRecord.deptName,jdbcType=VARCHAR},
+                #{hisRegisterRecord.doctorName,jdbcType=VARCHAR},
+                #{hisRegisterRecord.visitTime,jdbcType=VARCHAR},
+                #{hisRegisterRecord.createTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+</mapper>

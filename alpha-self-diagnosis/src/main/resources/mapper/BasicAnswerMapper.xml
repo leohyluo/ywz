@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alpha.self.diagnosis.mapper.BasicAnswerMapper">
+	<resultMap type="com.alpha.self.diagnosis.pojo.BasicAnswer" id="BaseResultMap">
+		<id property="id" column="id"/>
+		<result property="basicQuestionId" column="basic_question_id"/>
+		<result property="answerCode" column="answer_code"/>
+		<result property="answerValue" column="answer_value"/>
+		<result property="answerTitle" column="content"/>
+		<result property="expression" column="expression"/>
+		<result property="defaultOrder" column="default_order"/>
+	</resultMap>
+	
+	<select id="findByQuestionCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select id,basic_question_id,answer_code,answer_value,content,expression,default_order from basic_answer
+		where basic_question_id = #{questionCode} order by default_order
+	</select>
+</mapper>

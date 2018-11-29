@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.commons.core.mapper.UserCardInfoMapper">
+     <resultMap id="BaseResultMap" type="com.alpha.commons.core.pojo.UserCardInfo">
+         <id property="id" column="id"/>
+         <result property="patientName" column="patientName"/>
+         <result property="sex" column="sex"/>
+         <result property="birthday" column="birthday"/>
+         <result property="nationality" column="nationality" />
+         <result property="nation" column="nation" />
+         <result property="contactPhone" column="contactPhone"/>
+         <result property="contactName" column="contactName"/>
+         <result property="contactIdCard" column="contactIdCard"/>
+         <result property="relationship" column="relationship"/>
+         <result property="patientCertiType" column="patientCertiType"/>
+         <result property="patientCertiNo" column="patientCertiNo"/>
+         <result property="school" column="school"/>
+         <result property="hospitalCode" column="hospital_code"/>
+         <result property="address" column="address"/>
+         <result property="createTime" column="createTime"/>
+     </resultMap>
+
+    <insert id="saveUserCardInfo" parameterType="com.alpha.commons.core.pojo.UserCardInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
+        INSERT INTO user_card_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+           <if test="id != null">
+               id,
+           </if>
+            <if test="patientName != null">
+                patientName,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="nationality != null">
+                nationality,
+            </if>
+            <if test="nation != null">
+                nation,
+            </if>
+            <if test="contactPhone != null">
+                contactPhone,
+            </if>
+            <if test="contactName != null">
+                contactName,
+            </if>
+            <if test="contactIdCard != null">
+                contactIdCard,
+            </if>
+            <if test="contactIdCardType != null">
+                contactIdCardType,
+            </if>
+            <if test="relationship != null" >
+                relationship,
+            </if>
+            <if test="patientCertiType != null">
+                patientCertiType,
+            </if>
+            <if test="patientCertiNo != null">
+                patientCertiNo,
+            </if>
+            <if test="school != null">
+                school,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="cardNumber != null">
+                cardNumber,
+            </if>
+            <if test="hospitalCode != null">
+                hospitalCode,
+            </if>
+            <if test="createTime != null" >
+                createTime,
+            </if>
+            <if test="cardOrder != null" >
+                cardOrder
+            </if>
+        </trim>
+
+        <trim prefix="values (" suffixOverrides="," suffix=")">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="patientName != null">
+                #{patientName},
+            </if>
+            <if test="sex != null">
+                #{sex},
+            </if>
+            <if test="birthday != null">
+                #{birthday},
+            </if>
+            <if test="nationality != null">
+                #{nationality},
+            </if>
+            <if test="nation != null">
+                #{nation},
+            </if>
+            <if test="contactPhone != null">
+                #{contactPhone},
+            </if>
+            <if test="contactName != null">
+                #{contactName},
+            </if>
+            <if test="contactIdCard != null">
+                #{contactIdCard},
+            </if>
+            <if test="contactIdCardType != null">
+                #{contactIdCardType},
+            </if>
+            <if test="relationship != null" >
+                #{relationship},
+            </if>
+            <if test="patientCertiType != null">
+                #{patientCertiType},
+            </if>
+            <if test="patientCertiNo != null">
+                #{patientCertiNo},
+            </if>
+            <if test="school != null">
+                #{school},
+            </if>
+            <if test="address != null">
+                #{address},
+            </if>
+            <if test="cardNumber != null">
+                #{cardNumber},
+            </if>
+            <if test="hospitalCode != null">
+                #{hospitalCode},
+            </if>
+            <if test="createTime != null ">
+                #{createTime},
+            </if>
+            <if test="cardOrder != null" >
+                #{cardOrder}
+            </if>
+        </trim>
+
+    </insert>
+
+    <select id="selectUserCardInfo" resultType="com.alpha.commons.core.pojo.UserCardInfo"  >
+         SELECT * from user_card_info WHERE  id=#{id}
+            and   patientCertiNo = #{idCard} or contactIdCard = #{idCard}
+             ORDER BY createTime limit 1;
+    </select>
+
+    <update id="updateUserCardInfo">
+        UPDATE user_card_info SET cardNumber = #{card_number} where hospitalcode = #{hospital_code} and patientCertiNo = #{user_certificate_number}
+    </update>
+
+    <select id="orderOrPhone" resultType="com.alpha.commons.core.pojo.UserCardInfo">
+         SELECT * from user_card_info WHERE 1=1
+         <if test="order != null and order !=''">
+             and cardOrder =#{order}
+         </if>
+         <if test="phone != null and phone !=''">
+             and contactPhone =#{phone}
+         </if>
+         order by createTime desc limit 1
+    </select>
+
+</mapper>

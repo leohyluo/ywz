@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.self.diagnosis.pojo.SynonymMapper">
+	<resultMap type="com.alpha.self.diagnosis.pojo.Synonym" id="BaseResultMap">
+		<result property="synonym" column="synonymous_symptoms_keyword"/>
+		<result property="symptomName" column="diagnosis_symptoms_symp_name"/>
+	</resultMap>
+	
+	<select id="query" parameterType="HashMap" resultMap="BaseResultMap">
+		SELECT
+		synonymous_symptoms.keyword as 'synonymous_symptoms_keyword',
+		diagnosis_symptoms.symp_name as 'diagnosis_symptoms_symp_name'
+		FROM
+		synonymous_symptoms
+		INNER JOIN diagnosis_symptoms ON synonymous_symptoms.symp_code = diagnosis_symptoms.symp_code
+		<where>
+			<if test="wordList != null">
+				and synonymous_symptoms.keyword in
+				<foreach collection="wordList" item="item" open="(" separator="," close=")">
+					 #{item}
+				</foreach>			
+			</if>
+		</where>
+	</select>
+</mapper>

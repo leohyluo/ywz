@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.commons.core.mapper.YwzCountTimesMapper">
+     <!--插入数据的时候进行校验-->
+     <select id="sel" resultType="com.alpha.commons.core.pojo.YwzCountTimes">
+         SELECT * from ywz_count WHERE 1=1
+         <if test="type !=null">
+             and `type` =#{type}
+         </if>
+         <if test="diseaseId !=null">
+             and diseaseId=#{diseaseId}
+         </if>
+         <if test="deviceId !=null">
+            and  deviceId=#{deviceId}
+         </if>
+         <if test="pno !=null">
+            and  pno=#{pno}
+         </if>
+         <if test="descri !=null">
+             and descri=#{descri}
+         </if>
+         and DATE_FORMAT(createTime,"%Y-%m-%d") =#{createTime}
+
+     </select>
+     <!--获取以type分类的所有统计-->
+     <select id="gettimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes">
+          select t.`type`,COUNT(t.times) as times  from ywz_count t LEFT JOIN his_register_yygh t1
+	on t.pno = t1.pno
+WHERE t.times=1 and t.createTime BETWEEN #{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and t1.dept_name like    CONCAT('%',#{depName},'%')  </if> GROUP by t.`type`
+
+
+     </select>
+     <!--获取导入分类次数-->
+    <select id="getimporttimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes">
+        select `type`,descri,COUNT(times) as times  from ywz_count WHERE times=1 and  `type` = 6 and createTime BETWEEN #{startTime} and #{endTime} GROUP by descri
+    </select>
+
+    <!--获取编辑分类次数-->
+    <select id="getedittimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes">
+        select `type`,descri,COUNT(times) as times  from ywz_count WHERE times=1 and `type` = 7 and createTime BETWEEN #{startTime} and #{endTime} GROUP by descri
+    </select>
+
+    <!--具体医生导入模块统计-->
+
+    <select id="getDoctorimporttimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes">
+        SELECT descri,doctorName,COUNT(times) as times from ywz_count WHERE times=1 and createTime BETWEEN #{startTime} and #{endTime}
+           and doctorName is not null and type =6 GROUP BY descri,doctorName
+    </select>
+
+    <!--具体医生导入人次-->
+    <select id="doctorpatienttimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes">
+        SELECT a.doctorName,COUNT(a.doctorName) as times from (
+        SELECT pno,doctorName  from ywz_count WHERE times=1 and createTime BETWEEN #{startTime} and #{endTime}
+        and doctorName is not null and type =6 GROUP BY pno,doctorName ) a GROUP BY a.doctorName
+    </select>
+
+    <!--没有获取医生名字，但是有导入-->
+    <select id="nodoctortimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes" >
+         SELECT * from ywz_count WHERE type =6 and times =1 and createTime BETWEEN #{startTime} and #{endTime} and doctorName is null GROUP BY pno
+    </select>
+
+
+    <select id="editTimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes" >
+        SELECT descri,count(descri) as times  from ywz_count WHERE type=7 and times=1 and createTime BETWEEN #{startTime} and #{endTime} GROUP
+        BY descri;
+    </select>
+
+    <select id="importTimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes" >
+
+
+SELECT t.descri, count(t.descri) as times from ywz_count t LEFT JOIN his_register_yygh t1
+		on t.pno = t1.pno
+	WHERE t.type=6 and t.times=1 and t.createTime BETWEEN#{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and t1.dept_name like    CONCAT('%',#{depName},'%')  </if>
+	 GROUP BY t.descri
+
+    </select>
+
+    <select id="doctorShowTimes" resultType="com.alpha.commons.core.pojo.YwzCountTimes" >
+        SELECT
+            t.doctorName,
+            count(t.pno) AS times,
+            t1.dept_name
+        FROM
+            ywz_count t
+        LEFT JOIN his_register_yygh t1 ON t.pno = t1.pno
+        WHERE
+            t.type = 5
+        AND t.times = 1
+        AND t.createTime BETWEEN  #{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and t1.dept_name like    CONCAT('%',#{depName},'%')  </if>
+        GROUP BY
+            t.doctorName
+        ORDER BY
+            t.doctorName DESC
+    </select>
+
+    <select id="userAndimport" resultType="com.alpha.commons.core.pojo.YwzCountTimes" >
+         SELECT  b.doctorName ,count(a.pno) as times from
+        (SELECT  t.pno FROM ywz_count t inner JOIN his_register_yygh t1
+	on t.pno = t1.pno
+ WHERE t.type=6 and t.times =1 and t.createTime BETWEEN #{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and t1.dept_name like CONCAT('%',#{depName},'%')  </if> GROUP BY t.pno) a
+        LEFT JOIN
+        (SELECT t.doctorName, t.pno from ywz_count t inner join his_register_yygh t1
+		on t.pno = t1.pno
+WHERE  t.times=1 and t.type=5 and t.createTime BETWEEN #{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and t1.dept_name like CONCAT('%',#{depName},'%')  </if> ) b
+        on a.pno=b.pno GROUP BY b.doctorName ORDER BY b.doctorName desc
+    </select>
+
+    <!-- 预约推送量 -->
+    <select id="pushAppointmentTimes" resultType="java.lang.Integer">
+SELECT count(1) from his_register_yygh
+         where date_format(create_time,"%Y-%m-%d %H:%i:%S") BETWEEN #{startTime} and #{endTime} and type =2
+             <if test="depName != null and depName != 'none'"> and dept_name like CONCAT('%',#{depName},'%')  </if>
+    </select>
+
+    <!-- 预约推送成功量 -->
+    <select id="pushAppointmentSuccessTimes" resultType="java.lang.Integer">
+        SELECT count(1) from his_register_yygh WHERE
+        date_format(create_time,"%Y-%m-%d %H:%i:%S") BETWEEN #{startTime} and #{endTime} and type =2 and status = 1
+        <if test="depName != null and depName != 'none'"> and dept_name like CONCAT('%',#{depName},'%')  </if>
+    </select>
+
+    <!-- 取号推送成功量 -->
+    <select id="pushLiveTimes" resultType="java.lang.Integer">
+        SELECT count(1) from his_register_yygh WHERE date_format(create_time,"%Y-%m-%d %H:%i:%S")
+        BETWEEN #{startTime} and #{endTime} and type in (1,3)  <if test="depName != null and depName != 'none'"> and dept_name like CONCAT('%',#{depName},'%')  </if>
+    </select>
+
+    <select id="pushLiveSuccessTimes" resultType="java.lang.Integer" >
+SELECT count(1) from his_register_yygh where date_format(create_time,"%Y-%m-%d %H:%i:%S")
+ BETWEEN #{startTime} and #{endTime} and type in (1,3) and status=1 <if test="depName != null and depName != 'none'"> and dept_name like CONCAT('%',#{depName},'%')  </if>
+    </select>
+
+<select id="scanSuccessTimes1" resultType="java.lang.Integer" >
+   SELECT count(times) from ywz_count WHERE times=1 and type =4 and date_format(createTime,"%Y-%m-%d %H:%i:%S") BETWEEN #{startTime} and #{endTime}
+</select>
+
+    <select id="scanSuccessTimes2" resultType="java.lang.Integer" >
+      SELECT count(1) from user_basic_record WHERE channel =1 and status =10
+      and date_format(create_time,"%Y-%m-%d %H:%i:%S")  BETWEEN #{startTime} and #{endTime};
+    </select>
+
+    <select id="firstVisitTimes" resultType="java.lang.Integer">
+SELECT count(b.yno) from user_basic_record a INNER JOIN his_register_yygh b on a.his_register_no=b.yno WHERE b.type=3 and
+ a.status=10 and  date_format(b.create_time,"%Y-%m-%d %H:%i:%S") BETWEEN #{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and b.dept_name like CONCAT('%',#{depName},'%')  </if>
+    </select>
+
+    <select id="firstVisitTimes1" resultType="java.lang.Integer">
+SELECT count(b.pno) from user_basic_record a INNER JOIN his_register_yygh b on a.his_register_no=b.pno WHERE b.type
+in (1,3) and a.status =10 and date_format(b.create_time,"%Y-%m-%d %H:%i:%S") BETWEEN #{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and b.dept_name like CONCAT('%',#{depName},'%')  </if>
+    </select>
+
+    <select id="firstVisitTimes2" resultType="java.lang.Integer">
+        SELECT count(1) from user_basic_record WHERE
+        status=10 and date_format(create_time,"%Y-%m-%d %H:%i:%S")  BETWEEN #{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and b.dept_name like CONCAT('%',#{depName},'%')  </if>
+    </select>
+
+    <select id="firstNoCoverTimes" resultType="Integer" >
+SELECT sum(secondsTimes) from (
+  SELECT count(a.p_no) AS secondsTimes
+  FROM user_defined_keys a
+    INNER JOIN user_basic_record b ON a.p_no = b.his_register_no
+    INNER JOIN his_register_yygh c ON c.yno = b.his_register_no
+  WHERE b.status = 10 AND c.type = 3
+        AND date_format(c.create_time,"%Y-%m-%d %H:%i:%S") BETWEEN #{startTime} and #{endTime}
+  UNION ALL
+  SELECT count(a.p_no) AS secondsTimes
+  FROM user_defined_keys a
+    INNER JOIN user_basic_record b ON a.p_no = b.his_register_no
+    INNER JOIN his_register_yygh c ON c.pno = b.his_register_no
+  WHERE b.status = 10 AND c.type IN (1, 3)
+        AND date_format(c.create_time,"%Y-%m-%d %H:%i:%S") BETWEEN #{startTime} and #{endTime}
+) as Alltimes
+    </select>
+
+    <select id="secondVisitTimes" resultType="Integer">
+SELECT sum(allTimes) from (
+SELECT count(a.his_register_no) as allTimes from user_basic_record a INNER JOIN his_register_yygh b on a.his_register_no=b.pno
+WHERE  a.diagnosis_type =2 and b.type in (1,3)
+and date_format(b.create_time,"%Y-%m-%d %H:%i:%S")  BETWEEN #{startTime} and #{endTime}
+UNION ALL
+SELECT count(a.his_register_no) as allTimes from user_basic_record a
+INNER JOIN his_register_yygh b on a.his_register_no=b.yno
+WHERE  a.diagnosis_type =2 and b.type =3
+ and date_format(b.create_time,"%Y-%m-%d %H:%i:%S")  BETWEEN #{startTime} and #{endTime}) as A
+    </select>
+
+    <select id="getClik" resultType="java.util.Map">
+        SELECT a.type*1 as type ,count(a.type) as times  from his_register_yygh a LEFT JOIN ywz_count b on
+        a.out_patient_no=b.descri
+        WHERE b.type=3 and  a.create_time  BETWEEN #{startTime} and #{endTime} and a.status=1 and
+        b.create_time BETWEEN #{startTime} and #{endTime} <if test="depName != null and depName != 'none'"> and dept_name like CONCAT('%',#{depName},'%')  </if> GROUP BY a.type;
+    </select>
+
+    <select id="getSubmit" resultType="java.util.Map" >
+        SELECT a.type*1 as type ,count(a.type) as times  from his_register_yygh a LEFT JOIN user_basic_record b on a.pno
+        =b.his_register_no
+        WHERE  a.create_time BETWEEN #{startTime} and #{endTime}
+        and b.create_time BETWEEN #{startTime} and #{endTime}
+        and b.status=10 and a.status =1  <if test="depName != null and depName != 'none'"> and dept_name like CONCAT('%',#{depName},'%')  </if>  GROUP BY a.type;
+    </select>
+
+</mapper>

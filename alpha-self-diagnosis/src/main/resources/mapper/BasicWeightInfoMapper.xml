@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.self.diagnosis.mapper.BasicWeightInfoMapper">
+  <resultMap id="BaseResultMap" type="com.alpha.self.diagnosis.pojo.BasicWeightInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
+    <result column="min_age" jdbcType="DOUBLE" property="minAge" />
+    <result column="max_age" jdbcType="DOUBLE" property="maxAge" />
+    <result column="normal_start" jdbcType="DOUBLE" property="normalStart" />
+    <result column="normal_end" jdbcType="DOUBLE" property="normalEnd" />
+    <result column="default_weight" jdbcType="DOUBLE" property="defaultWeight" />
+  </resultMap>
+  
+  <select id="query" resultType="DataRecord" parameterType="HashMap">
+  	select * from basic_weight_info
+  	<where>
+	  	<if test="gender != null">
+	  		and gender = #{gender}
+	  	</if>
+	  	<if test="age != null">
+	  		<![CDATA[
+	  			and min_age <= #{age} and max_age >= #{age} 
+	  		]]>
+	  		
+	  	</if>
+  	</where>
+  </select>
+</mapper>

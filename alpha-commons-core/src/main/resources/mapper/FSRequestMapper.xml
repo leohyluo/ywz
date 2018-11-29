@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.commons.core.mapper.FSRequestMapper">
+
+    <select id="selectByParam" resultType="com.alpha.commons.core.pojo.inspcetion.FSRequest">
+
+        SELECT * from fs_request WHERE 1=1
+        <if test="param.patient_id != null and param.patient_id !=''">
+            and  exam_sno=#{param.patient_id}
+        </if>
+
+        <if test="param.startTime != null and param.endTime != null and param.startTime != '' and param.endTime != ''">
+            <![CDATA[ and date_format(reg_date,'%Y-%m-%d %H:%i:%S') between '${param.startTime}' and '${param.endTime}' ]]>
+        </if>
+    </select>
+
+    <update id="updateByMap" >
+        UPDATE fs_request set push_status=#{param.pushStatus} where id=#{param.id}
+    </update>
+
+
+</mapper>

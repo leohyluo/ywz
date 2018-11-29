@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alpha.self.diagnosis.mapper.PreQuestionAnswerMapper">
+	<resultMap type="com.alpha.server.rpc.diagnosis.pojo.PreQuestionAnswer" id="BaseResultMap">
+		<id property="id" column="id"/>
+		<result property="questionCode" column="question_code"/>
+		<result property="answerCode" column="answer_code"/>
+		<result property="answerContent" column="answer_content"/>
+		<result property="nextQuestionCode" column="next_question_code"/>
+		<result property="gender" column="gender"/>
+		<result property="minAge" column="min_age"/>
+		<result property="maxAge" column="max_age"/>
+		<result property="defaultOrder" column="default_order"/>
+		<result property="appType" column="app_type"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+
+	<select id="getByQuestionCode" parameterType="com.alpha.server.rpc.diagnosis.pojo.PreQuestionAnswer" resultMap="BaseResultMap">
+		SELECT * from pre_question_answer
+		<where>
+			question_code = #{questionCode} and (app_type is null or app_type = #{appType})
+			<if test="gender != null">
+				and (gender is null or gender = #{gender})
+			</if>
+			<if test="age != null">
+				<![CDATA[
+					and (min_age is null or min_age <= #{age}) and (max_age is null or max_age >= #{age})
+				]]>
+			</if>
+		</where>
+		ORDER BY default_order
+	</select>
+
+
+</mapper>

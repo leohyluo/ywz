@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DiagnosisDiseaseMainsymQuestion">
+
+
+    <select id="queryDiagnosisDiseaseMainsymQuestion" parameterType="HashMap" resultType="DataRecord">
+        select disease_code,main_sym_code,question_code,question_order,weight
+        from diagnosis_disease_mainsym_question where question_code in
+        <foreach item="item" index="index" collection="questionCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

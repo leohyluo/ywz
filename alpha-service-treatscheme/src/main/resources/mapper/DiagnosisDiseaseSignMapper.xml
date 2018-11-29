@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DiagnosisDiseaseSign" >
+
+    <select id="queryByDiseaseCode" resultType="DataRecord" parameterType="HashMap">
+        SELECT * from diagnosis_disease_sign WHERE disease_code = #{diseaseCode} order by default_order
+    </select>
+</mapper>

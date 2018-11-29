@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.his.dao.impl.UserCardInfoDaoImpl">
+  <resultMap id="UserCardMap" type="com.alpha.server.rpc.his.pojo.UserCard">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="patientName" jdbcType="VARCHAR" property="patientname" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="contactPhone" jdbcType="VARCHAR" property="contactphone" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="nation" jdbcType="VARCHAR" property="nation" />
+    <result column="nationality" jdbcType="VARCHAR" property="nationality" />
+    <result column="contactName" jdbcType="VARCHAR" property="contactname" />
+    <result column="relationship" jdbcType="BIGINT" property="relationship" />
+    <result column="contactIdCard" jdbcType="VARCHAR" property="contactidcard" />
+    <result column="patientCertiType" jdbcType="BIGINT" property="patientcertitype" />
+    <result column="patientCertiNo" jdbcType="VARCHAR" property="patientcertino" />
+    <result column="school" jdbcType="VARCHAR" property="school" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="cardNumber" jdbcType="VARCHAR" property="cardnumber" />
+    <result column="hospitalCode" jdbcType="VARCHAR" property="hospitalcode" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="status" jdbcType="BIGINT" property="status" />
+    <result column="contactIdCardType" jdbcType="BIGINT" property="contactidcardtype" />
+    <result column="cardOrder" jdbcType="BIGINT" property="cardorder" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, patientName, birthday, contactPhone, sex, nation, nationality, contactName, relationship, 
+    contactIdCard, patientCertiType, patientCertiNo, school, address, cardNumber, hospitalCode, 
+    createTime, status, contactIdCardType, cardOrder
+  </sql>
+  <select id="selectSelective" parameterType="com.alpha.server.rpc.his.pojo.UserCard" resultMap="UserCardMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_card_info
+    WHERE
+    1=1
+    <if test="contactidcardtype != null">
+      AND contactIdCardType = #{contactidcardtype}
+    </if>
+    <if test="contactidcard != null and contactidcard!=''">
+      AND contactIdCard = #{contactidcard}
+    </if>
+    <if test="orderByClause != null and orderByClause!=''">
+      order by ${orderByClause}
+    </if>
+  </select>
+</mapper>

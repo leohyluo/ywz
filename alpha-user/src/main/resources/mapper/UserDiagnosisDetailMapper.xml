@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.user.pojo.UserDiagnosisDetail">
+
+
+    <select id="getByQuestionCode" parameterType="HashMap" resultType="DataRecord">
+    select * from user_diagnosis_detail where diagnosis_id=#{diagnosisId} and question_code=#{questionCode} limit 1
+  </select>
+
+  <select id="queryByDiagnosisId" parameterType="HashMap" resultType="DataRecord">
+    select * from user_diagnosis_detail where diagnosis_id=#{diagnosisId} and question_type != 106
+  </select>
+
+	<select id="queryAllByDiagnosisId" parameterType="HashMap" resultType="DataRecord">
+		select * from user_diagnosis_detail where diagnosis_id=#{diagnosisId}
+	</select>
+
+	<select id="queryBySympCode" parameterType="HashMap" resultType="DataRecord">
+    select * from user_diagnosis_detail where diagnosis_id=#{diagnosisId} and symp_code!=#{sympCode} and question_type != 106
+  </select>
+	
+	<select id="queryByQuestionCodeList" parameterType="HashMap" resultType="DataRecord">
+    	select * from user_diagnosis_detail where diagnosis_id=#{diagnosisId} and question_code in
+    	<foreach item="item" collection="questionCodeList" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>  
+
+	<delete id="delBySympcode" parameterType="HashMap">
+		delete from user_diagnosis_detail where diagnosis_id=#{diagnosisId} and question_type != 100
+	</delete>
+
+	<delete id="deleteAdditonalUserDiagnosisDetail" parameterType="HashMap">
+		delete from user_diagnosis_detail where diagnosis_id=#{diagnosisId} and question_type = 106
+	</delete>
+
+	<delete id="deleteAdditonalUserDiagnosisDetailById" parameterType="HashMap">
+		delete from user_diagnosis_detail where diagnosis_id=#{diagnosisId} and question_type = 106 and id > #{id}
+	</delete>
+
+	<delete id="delBySympcode2" parameterType="HashMap">
+		delete from user_diagnosis_detail where diagnosis_id=#{diagnosisId} and symp_code!=#{sympCode}
+	</delete>
+</mapper>

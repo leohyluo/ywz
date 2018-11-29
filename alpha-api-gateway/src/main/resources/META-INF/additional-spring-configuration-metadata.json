@@ -1,0 +1,37 @@
+{"properties": [
+  {
+    "name": "service.register.center.ip",
+    "type": "java.lang.String",
+    "description": "A description for 'service.register.center.ip'"
+  },
+  {
+    "name": "service.register.center.port",
+    "type": "java.lang.String",
+    "description": "A description for 'service.register.center.port'"
+  },
+  {
+    "name": "service.register.center2.ip",
+    "type": "java.lang.String",
+    "description": "A description for 'service.register.center2.ip'"
+  },
+  {
+    "name": "service.register.center2.port",
+    "type": "java.lang.String",
+    "description": "A description for 'service.register.center2.port'"
+  },
+  {
+    "name": "hystrix.command.default.execution.isolation.thread.timeout-in-milliseconds",
+    "type": "java.lang.String",
+    "description": "A description for 'hystrix.command.default.execution.isolation.thread.timeout-in-milliseconds'"
+  },
+  {
+    "name": "service.register.center.hostname",
+    "type": "java.lang.String",
+    "description": "A description for 'service.register.center.hostname'"
+  },
+  {
+    "name": "service.register.center2.hostname",
+    "type": "java.lang.String",
+    "description": "A description for 'service.register.center2.hostname'"
+  }
+]}

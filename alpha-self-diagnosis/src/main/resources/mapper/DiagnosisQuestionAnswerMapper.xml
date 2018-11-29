@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DiagnosisQuestionAnswer">
+    <resultMap id="diagnosisQuestionAnswer" type="com.alpha.server.rpc.diagnosis.pojo.DiagnosisQuestionAnswer">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="question_code" jdbcType="VARCHAR" property="questionCode"/>
+        <result column="answer_code" jdbcType="VARCHAR" property="answerCode"/>
+        <result column="disease_code" jdbcType="VARCHAR" property="diseaseCode"/>
+        <result column="answer_spec" jdbcType="INTEGER" property="answerSpec"/>
+        <result column="weight" jdbcType="DOUBLE" property="weight"/>
+        <result column="default_order" jdbcType="INTEGER" property="defaultOrder"/>
+        <result column="next_question_id" jdbcType="VARCHAR" property="nextQuestionId"/>
+        <result column="mutually_exclusive" jdbcType="INTEGER" property="mutuallyExclusive"/>
+        <result column="mutually_answer_code" jdbcType="VARCHAR" property="mutuallyAnswerCode"/>
+        <result column="incre_flag" jdbcType="VARCHAR" property="increFlag"/>
+        <result column="opera_flag" jdbcType="VARCHAR" property="operaFlag"/>
+        <result column="operate_type" jdbcType="VARCHAR" property="operateType"/>
+        <result column="data_version" jdbcType="INTEGER" property="dataVersion"/>
+        <result column="version_evolution" jdbcType="VARCHAR" property="versionEvolution"/>
+    </resultMap>
+
+    <!-- 根据问题编号查询问题 -->
+    <select id="queryDiagnosisQuestionAnswer" parameterType="HashMap" resultType="DataRecord">
+      SELECT
+			dqa.id,
+			dqa.question_code,
+			da.answer_code,
+			dqa.min_value,
+			dqa.max_value,
+			da.content,
+			da.popu_content,
+			dqa.disease_code,
+			dqa.answer_spec,
+			dqa.weight,
+			dqa.default_order,
+			dqa.next_question_id,
+			da.gender,
+			da.min_age,
+			da.max_age,
+			da.answer_image,
+			ddmq.weight AS question_weight,
+			dqa.conn_code,
+			dqa.calculation_formula
+		FROM
+			diagnosis_question_answer dqa
+		INNER JOIN diagnosis_answer da ON (
+			da.answer_code = dqa.answer_code
+		)
+		LEFT JOIN diagnosis_disease_mainsym_question ddmq ON (
+			ddmq.question_code = dqa.question_code
+			AND ddmq.disease_code = dqa.disease_code
+			AND ddmq.main_sym_code = #{mainSympCode}
+		)
+		LEFT JOIN diagnosis_disease_rate ddr ON(
+			ddmq.disease_code = ddr.disease_code AND ddmq.main_sym_code = ddr.main_symp_code
+		)
+		LEFT JOIN sy_diagnosis_answer sda ON sda.answer_code = dqa.conn_code	
+	  <if test="wordsProperty != null">
+	  		AND sda.words_prop = #{wordsProperty}
+	  </if>
+	  <where>	  	
+	  	<if test="questionCodes != null">
+	  		and dqa.question_code in
+	  		<foreach item="item" index="index" collection="questionCodes" open="(" separator="," close=")">
+           	 #{item}
+        </foreach>
+	  	</if>
+	  	AND (char_length(ddr.disease_code) > 0 or dqa.disease_code = '-1')
+		AND IFNULL(dqa.operate_type, '') not in ('D', 'H')
+		AND IFNULL(ddmq.operate_type, '') not in ('D', 'H')
+		AND IFNULL(ddr.operate_type, '') not in ('D', 'H')
+		ORDER BY dqa.default_order
+	  </where>     	 
+      
+    </select>
+
+    <!-- 根据答案编号查询答案 备份 -->
+    <select id="queryByAnswerCodes" parameterType="HashMap" resultType="DataRecord">
+        select dqa.conn_code,sda.answer_code as syAnswerCode,dqa.id,dqa.question_code,da.answer_code,da.content,da.popu_content,dqa.disease_code,dqa.answer_spec,dqa.weight,dqa.default_order,dqa.next_question_id
+        ,da.gender,da.min_age,da.max_age from diagnosis_question_answer dqa INNER join diagnosis_answer da on(da.answer_code=dqa.answer_code)
+        LEFT JOIN sy_diagnosis_answer sda ON dqa.conn_code = sda.answer_code
+        where dqa.question_code=#{questionCode} and da.answer_code in
+        <foreach item="item" index="index" collection="answerCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    
+    <!-- 根据主症状编码、问题编码、答案编码找出有效的疾病（非隐藏、非删除） -->
+    <select id="queryByAnswerCodes2" parameterType="HashMap" resultType="DataRecord">
+        SELECT
+			dqa.conn_code,
+			sda.answer_code AS syAnswerCode,
+			dqa.id,
+			dqa.question_code,
+			da.answer_code,
+			da.content,
+			da.popu_content,
+			dqa.disease_code,
+			dqa.answer_spec,
+			dqa.weight,
+			dqa.default_order,
+			dqa.next_question_id,
+			da.gender,
+			da.min_age,
+			da.max_age
+		FROM
+			diagnosis_question_answer dqa
+		INNER JOIN diagnosis_answer da ON (
+			da.answer_code = dqa.answer_code
+		)
+		LEFT JOIN diagnosis_disease_mainsym_question ddmq ON (
+			ddmq.question_code = dqa.question_code
+			AND ddmq.disease_code = dqa.disease_code
+			AND ddmq.main_sym_code = #{mainSympCode}
+		)
+		LEFT JOIN diagnosis_disease_rate ddr ON (
+			ddmq.disease_code = ddr.disease_code
+			AND ddmq.main_sym_code = ddr.main_symp_code
+		)
+		LEFT JOIN sy_diagnosis_answer sda ON dqa.conn_code = sda.answer_code
+		WHERE
+			dqa.question_code = #{questionCode}
+		AND da.answer_code IN 
+		<foreach item="item" index="index" collection="answerCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+		AND (
+			char_length(ddr.disease_code) > 0
+			OR dqa.disease_code = '-1'
+		)
+		AND IFNULL(dqa.operate_type, '') NOT IN ('D', 'H')
+		AND IFNULL(ddmq.operate_type, '') NOT IN ('D', 'H')
+		AND IFNULL(ddr.operate_type, '') NOT IN ('D', 'H')
+    </select>
+
+	<!-- 根据主症状编码、问题编码、答案编码找出有效的疾病（非隐藏、非删除）v1.1.3 -->
+	<select id="queryDiseaseByAnswerCodes" parameterType="HashMap" resultType="DataRecord">
+		SELECT
+		dqa.*
+		FROM
+		diagnosis_question_answer dqa
+		INNER JOIN diagnosis_disease_rate ddr ON dqa.disease_code = ddr.disease_code
+		WHERE
+		ddr.main_symp_code = #{mainSympCode}
+		AND dqa.question_code = #{questionCode}
+		AND dqa.answer_code IN
+		<foreach item="item" index="index" collection="answerCodes" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND IFNULL(ddr.operate_type, '') NOT IN ('D', 'H');
+	</select>
+
+    <!-- 根据答案编号查询答案 -->
+    <select id="queryByQuestionCodesAndAnswerCodes" parameterType="HashMap" resultType="DataRecord">
+        select dqa.id,dqa.question_code,da.answer_code,da.content,da.popu_content,dqa.disease_code,dqa.answer_spec,dqa.weight,dqa.default_order,dqa.next_question_id
+        ,da.gender,da.min_age,da.max_age from diagnosis_question_answer dqa INNER join diagnosis_answer da on(da.answer_code=dqa.answer_code)
+        where dqa.question_code in
+        <foreach item="item" index="index" collection="questionCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and da.answer_code in
+        <foreach item="item" index="index" collection="answerCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!-- 根据问题编号查询问题 -->
+    <select id="getDiagnosisQuestionAnswer" parameterType="HashMap" resultType="DataRecord">
+      select dqa.id,dqa.question_code,da.answer_code,da.content,da.popu_content,dqa.disease_code,dqa.answer_spec,dqa.weight,dqa.default_order,dqa.next_question_id
+      ,da.gender,da.min_age,da.max_age from diagnosis_question_answer dqa left join diagnosis_answer da on(da.answer_code=dqa.answer_code)
+      where dqa.answer_code=#{answerCode} and dqa.question_code=#{questionCode} limit 1
+    </select>
+
+    <select id="queryAnswers" parameterType="HashMap" resultType="DataRecord">
+        select dms.symp_code,dms.symp_name,dms.standard_deviation as 'question_standard_deviation',
+        dmq.question_code,dmq.question_type,dmq.title as 'question_title',dmq.standard_deviation as 'answer_standard_deviation',
+        ddmq.weight as 'question_weight',
+        dqa.answer_title,dqa.answer_code,dqa.disease_code,dqa.answer_spec,dqa.weight as 'answer_weight'
+        from diagnosis_mainsymp_question dmq
+        left join diagnosis_main_symptoms dms on(dmq.main_symp_code=dms.symp_code)
+        left join diagnosis_question_answer dqa on (dqa.question_code=dmq.question_code )
+        left join diagnosis_disease_mainsym_question ddmq on(ddmq.question_code=dmq.question_code and ddmq.main_sym_code=dmq.main_symp_code and ddmq.disease_code=dqa.disease_code)
+        where dqa.question_code in
+        <foreach item="item" index="index" collection="questionCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and answer_code in
+        <foreach item="item" index="index" collection="answerCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        group by dqa.answer_code,dqa.question_code,dqa.disease_code,dms.symp_code
+        order by dqa.disease_code,dmq.question_code
+    </select>
+    
+    <!-- 根据问题答案编码查询有效的疾病(未删除、未隐藏) -->
+    <select id="queryAnswers2" parameterType="HashMap" resultType="DataRecord">
+       SELECT
+			dms.symp_code,
+			dms.symp_name,
+			dms.standard_deviation AS 'question_standard_deviation',
+			dmq.question_code,
+			dmq.question_type,
+			dmq.title AS 'question_title',
+			dmq.standard_deviation AS 'answer_standard_deviation',
+			ddmq.weight AS 'question_weight',
+			dqa.answer_title,
+			dqa.answer_code,
+			dqa.disease_code,
+			dqa.answer_spec,
+			dqa.weight AS 'answer_weight'
+		FROM
+			diagnosis_mainsymp_question dmq
+		LEFT JOIN diagnosis_main_symptoms dms ON (
+			dmq.main_symp_code = dms.symp_code
+		)
+		LEFT JOIN diagnosis_question_answer dqa ON (
+			dqa.question_code = dmq.question_code
+		)
+		LEFT JOIN diagnosis_disease_mainsym_question ddmq ON (
+			ddmq.question_code = dmq.question_code
+			AND ddmq.main_sym_code = dmq.main_symp_code
+			AND ddmq.disease_code = dqa.disease_code
+			AND ddmq.main_sym_code = #{mainSympCode}
+		)
+		LEFT JOIN diagnosis_disease_rate ddr ON (
+			ddmq.disease_code = ddr.disease_code
+			AND ddmq.main_sym_code = ddr.main_symp_code
+		)
+		WHERE dqa.question_code IN
+        <foreach item="item" index="index" collection="questionCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and answer_code in
+        <foreach item="item" index="index" collection="answerCodes" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND (
+			char_length(ddr.disease_code) > 0
+			OR dqa.disease_code = '-1'
+		)
+		AND IFNULL(dqa.operate_type, '') NOT IN ('D', 'H')
+		AND IFNULL(ddmq.operate_type, '') NOT IN ('D', 'H')
+		AND IFNULL(ddr.operate_type, '') NOT IN ('D', 'H')
+		GROUP BY
+			dqa.answer_code,
+			dqa.question_code,
+			dqa.disease_code,
+			dms.symp_code
+		ORDER BY
+			dqa.disease_code,
+			dmq.question_code
+    </select>
+
+	<!-- 获取问题下的隐藏答案 -->
+	<select id="queryHiddenAnswers" parameterType="HashMap" resultType="DataRecord">
+		SELECT * from diagnosis_question_answer a 
+		<where>
+			<if test="questionCode != null">
+				and a.question_code = #{questionCode}
+			</if>
+			 and a.mutually_answer_code is not null and a.mutually_answer_code != '' and a.mutually_answer_code != '0'
+		</where>
+	</select>
+</mapper>

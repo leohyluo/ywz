@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: alpha-data-quartz
+  profiles:
+    active: core
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:19081/eureka/
+#  instance:
+#      status-page-url: http://doctorppe.zhyaoshi.com/info
+server:
+  port: 19100
+logging:
+  config: classpath:logback.xml
+
+feign:
+   hystrix:
+      enabled: true
+   compression:
+      request:
+        enabled: true
+        mime-types: text/xml;application/xml;application/json
+        min-request-size: 2048
+      response:
+        enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: THREAD
+        thread:
+          timeoutInMilliseconds: 6000
+      timeout:
+        enabled: true
+
+ribbon:
+  ReadTimeout: 6000
+  ConnectTimeout: 6000
+
+mapper:
+  identity: MYSQL
+  mappers: com.alpha.commons.MyMapper
+  not-empty: false

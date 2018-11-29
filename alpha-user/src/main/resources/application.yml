@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: alpha-user
+server:
+  port: 19091
+#解决服务集成swagger-ui,在eureka的status显示端口和链接端口不一致 的问题
+#eureka:
+#  instance:
+#    status-page-url: http://localhost:${server.port}/info    

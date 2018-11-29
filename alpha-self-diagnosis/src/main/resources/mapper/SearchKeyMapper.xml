@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.self.diagnosis.mapper.SearchKeyMapper">
+	<insert id="searchKey" parameterType="com.alpha.server.rpc.diagnosis.pojo.SearchKeys">
+		INSERT INTO user_defined_keys ( `card_no`, `p_no`, `keys`, `create_time`)
+		VALUES (#{cardNo}, #{pNo}, #{keys}, now())
+	</insert>
+</mapper>

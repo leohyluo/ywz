@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainSymptoms">
+    <resultMap id="diagnosisMainSymptoms" type="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainSymptoms">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="symp_code" jdbcType="VARCHAR" property="sympCode"/>
+        <result column="symp_name" jdbcType="VARCHAR" property="sympName"/>
+        <result column="popu_name" jdbcType="VARCHAR" property="popuName"/>
+        <result column="symbol" jdbcType="VARCHAR" property="symbol"/>
+        <result column="gender" jdbcType="INTEGER" property="gender"/>
+        <result column="min_age" jdbcType="INTEGER" property="minAge"/>
+        <result column="max_age" jdbcType="INTEGER" property="maxAge"/>
+        <result column="default_order" jdbcType="INTEGER" property="defaultOrder"/>
+        <result column="template_id" jdbcType="BIGINT" property="templateId"/>
+        <result column="special_period" jdbcType="INTEGER" property="specialPeriod"/>
+        <result column="incre_flag" jdbcType="VARCHAR" property="increFlag"/>
+        <result column="opera_flag" jdbcType="VARCHAR" property="operaFlag"/>
+        <result column="operate_type" jdbcType="VARCHAR" property="operateType"/>
+        <result column="data_version" jdbcType="INTEGER" property="dataVersion"/>
+        <result column="version_evolution" jdbcType="VARCHAR" property="versionEvolution"/>
+    </resultMap>
+
+	<select id="queryByKeyword" resultType="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainSymptoms" parameterType="HashMap">
+		select `symp_code` sympCode, `symp_name` sympName, `popu_name` popuName, `symbol` symbol, `gender` gender, `min_age` minAge, `max_age` maxAge, special_period specialPeriod, object_version objectVersion, template_id templateId, general_symptom generalSymptom, normal_symptom_code normalSymptomCode,is_show isShow
+		from diagnosis_main_symptoms
+		<where>
+			1 = 1
+			<if test="sympNameList != null">
+				and symp_name in
+				<foreach item="item" index="index" collection="sympNameList" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="sympCode != null and sympCode!=''">
+				and symp_code = #{sympCode}
+			</if>
+			<if test="keyword != null and keyword!=''">
+				and (symp_name like concat(concat('%',#{keyword}),'%') or symbol like concat(concat('%',#{keyword}),'%'))
+			</if>
+			order by default_order
+		</where>
+	</select>
+
+	<select id="queryBySympCodeList" resultType="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainSymptoms" parameterType="HashMap">
+		select `symp_code` sympCode, `symp_name` sympName, `popu_name` popuName, `symbol` symbol, `gender` gender, `min_age` minAge, `max_age` maxAge, special_period specialPeriod, object_version objectVersion, template_id templateId, general_symptom generalSymptom, normal_symptom_code normalSymptomCode,is_show isShow
+		from diagnosis_main_symptoms
+		<where>
+			1 = 1
+			<if test="sympCodeList != null">
+				and symp_code in
+				<foreach item="item" index="index" collection="sympCodeList" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			order by default_order
+		</where>
+	</select>
+
+	<select id="queryByObjectVersion" resultType="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainSymptoms" parameterType="HashMap">
+		select `symp_code` sympCode, `symp_name` sympName, `popu_name` popuName, `symbol` symbol, `gender` gender, `min_age` minAge, `max_age` maxAge, special_period specialPeriod, object_version objectVersion, template_id templateId  from diagnosis_main_symptoms
+		where object_version = #{objectVersion} order by default_order
+	</select>
+
+	<select id="queryBySymptomName" resultType="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainSymptoms" parameterType="HashMap">
+		select `symp_code` sympCode, `symp_name` sympName, `popu_name` popuName, `symbol` symbol, `gender` gender, `min_age` minAge, `max_age` maxAge, special_period specialPeriod, object_version objectVersion, template_id templateId  from diagnosis_main_symptoms
+		where symp_name = #{sympName} and object_version in (1,2)
+	</select>
+
+	<!--查询问诊过程中回答了有引申问题的常见伴随症状-->
+	<select id="queryMainSymptomOfExtQuestion" resultType="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainSymptoms" parameterType="HashMap">
+		SELECT dms.symp_code sympCode, dms.symp_name sympName from user_diagnosis_detail udd
+		INNER JOIN diagnosis_main_symptoms dms
+		on udd.symp_code = dms.symp_code
+		where udd.diagnosis_id = #{diagnosisId} and question_type = 106 GROUP BY udd.symp_code
+	</select>
+
+	<!--查询构成主诉的常见伴随症状-->
+	<select id="queryConstructSympOfMainSymptom" resultType="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainSymptoms" parameterType="HashMap">
+		SELECT dms.symp_code sympCode,dcs.symp_name sympName from diagnosis_mainsymp_concsymp dmc
+		INNER JOIN diagnosis_concomitant_symptom dcs
+		ON dmc.conc_symp_code = dcs.symp_code and dmc.system_code = #{systemCode}
+		INNER JOIN diagnosis_main_symptoms dms
+		ON dms.symp_name = dcs.symp_name AND dms.object_version in (1,2)
+		where dmc.main_symp_code = #{mainSympCode} AND dmc.type_flag = 1
+		AND dmc.is_main_complaint = 1
+		GROUP BY conc_symp_code ORDER BY dmc.default_order
+	</select>
+</mapper>

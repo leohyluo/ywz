@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.self.diagnosis.mapper.BasicQuestionMapper">
+
+  <resultMap id="BaseResultMap" type="com.alpha.self.diagnosis.pojo.BasicQuestion">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="question_code" jdbcType="VARCHAR" property="questionCode" />
+    <result column="display_type" jdbcType="VARCHAR" property="displayType" />
+    <result column="default_order" jdbcType="INTEGER" property="defaultOrder" />
+    <result column="in_type" jdbcType="INTEGER" property="inType" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
+    <result column="min_age" jdbcType="INTEGER" property="minAge" />
+    <result column="max_age" jdbcType="INTEGER" property="maxAge" />
+    <result column="range_scope" jdbcType="VARCHAR" property="rangeScope"/>
+  </resultMap>
+  
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    id,title,question_code,display_type,default_order,in_type,gender,min_age,max_age,range_scope
+    from basic_question
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="find" parameterType="com.alpha.self.diagnosis.pojo.BasicQuestion" resultMap="BaseResultMap">
+    select 
+    id,title,question_code,display_type,default_order,in_type,gender,min_age,max_age,range_scope
+    from basic_question
+    <where>
+    	<if test="defaultOrder != null">
+    		and default_order = #{defaultOrder}
+    	</if>
+    </where>
+  </select>
+  
+  <select id="findByQuestionCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    id,title,question_code,display_type,default_order,in_type,gender,min_age,max_age,range_scope
+    from basic_question
+    where is_enable = 1 and question_code = #{questionCode}
+  </select>
+  
+  <select id="findNext" parameterType="com.alpha.self.diagnosis.pojo.BasicQuestion" resultMap="BaseResultMap">
+    select 
+    id,title,question_code,display_type,default_order,in_type,gender,min_age,max_age,range_scope
+    from basic_question
+    <where>
+    	is_enable = 1 and default_order > 1
+    	<if test="defaultOrder != null">
+    		and default_order > #{defaultOrder}
+    	</if>
+    </where>
+    order by default_order
+  </select>
+  
+  <!-- <select id="findNextQuestions" parameterType="com.alpha.self.diagnosis.pojo.BasicQuestion" resultMap="BaseResultMap">
+    select 
+    id,title,question_code,display_type,default_order,in_type,gender,min_age,max_age
+    from basic_question
+    <where>
+    	is_enable = 1 and default_order > 1
+    	<if test="defaultOrder != null">
+    		and default_order > #{defaultOrder}
+    	</if>
+    </where>
+    order by default_order
+  </select> -->
+  
+</mapper>

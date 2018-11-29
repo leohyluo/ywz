@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainsympNeConcsymp">
+	<resultMap type="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainsympNeConcsymp" id="BaseResultMap">
+		<id property="id" column="id"/>
+		<result property="mainSympCode" jdbcType="BIGINT" column="main_symp_code"/>
+		<result property="concSympCode" jdbcType="VARCHAR" column="conc_symp_code"/>
+		<result property="concNesympCode" jdbcType="VARCHAR" column="conc_nesymp_code"/>
+		<result property="concSympName" jdbcType="VARCHAR" column="symp_name"/>
+	</resultMap>
+
+    <select id="list" parameterType="HashMap" resultType="DataRecord">
+    	SELECT a.main_symp_code,a.conc_symp_code,a.conc_nesymp_code,b.symp_name as 'concSympName' from diagnosis_mainsymp_neconcsymp a
+    	 inner JOIN  diagnosis_concomitant_symptom b
+		on a.conc_nesymp_code = b.symp_code
+    	<where>
+    		<if test="mainSympCode != null">
+    			and a.main_symp_code = #{mainSympCode}
+    		</if>
+			<if test="systemCode != null">
+				and a.system_code = #{systemCode}
+			</if>
+    	</where>
+    </select>
+
+	<select id="listByMainSympCode" parameterType="HashMap" resultType="DataRecord">
+		select a.*,b.symp_name as 'concSympName' from diagnosis_mainsymp_neconcsymp a
+		inner JOIN  diagnosis_concomitant_symptom b
+		on a.conc_nesymp_code = b.symp_code
+		where a.main_symp_code = #{mainSympCode}
+	</select>
+
+	<select id="listByHospitalCodeAndMainSympCode" parameterType="HashMap" resultType="DataRecord">
+		select a.*,b.symp_name as 'concSympName' from diagnosis_mainsymp_neconcsymp a
+		inner JOIN  diagnosis_concomitant_symptom b
+		on a.conc_nesymp_code = b.symp_code
+		where a.main_symp_code = #{mainSympCode}
+		and a.hospital_code = #{hospitalCode}
+	</select>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.push.mapper.UserBasicRecordMapper" >
+
+    <!-- 取现场号的预问诊记录 -->
+    <select id="getForLive" resultType="int" parameterType="java.lang.String">
+        select count(1) c from user_basic_record ubr INNER JOIN his_register_yygh hry on ubr.his_register_no = hry.pno and hry.pno = #{pno} and (hry.type = 1 or hry.type = 3) and ubr.status = 10
+    </select>
+
+    <select id="getForLiveObject" resultType="com.alpha.push.domain.UserBasicRecord" parameterType="java.lang.String">
+        select ubr.create_time createTime, ubr.diagnosis_id diagnosisId, ubr.user_id userId from user_basic_record ubr INNER JOIN his_register_yygh hry on ubr.his_register_no = hry.yno and hry.yno = #{pno} and (hry.type = 1 or hry.type = 3) and ubr.status = 10 limit 1
+    </select>
+
+    <!-- 取预约号的预问诊记录 -->
+    <select id="getForAppointment" resultType="int" parameterType="java.lang.String">
+        select count(1) c from user_basic_record ubr INNER JOIN his_register_yygh hry on ubr.his_register_no = hry.yno and hry.yno = #{pno} and hry.type = 2 and ubr.status = 10
+    </select>
+
+</mapper>

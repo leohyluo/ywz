@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.his.mapper.PushLogMapper">
+
+    <!-- 添加数据 -->
+    <insert id="recoder" parameterType="com.alpha.his.pojo.dto.PushInfoLog">
+    INSERT INTO `wx_push_log` ( `p_no`, `card_no`, `result`, `desc_`, `hash_code`, `create_time`)
+      VALUES (#{pNo,jdbcType=VARCHAR}, #{cardNo,jdbcType=VARCHAR}, #{result,jdbcType=INTEGER}, #{desc,jdbcType=VARCHAR},#{hashCode,jdbcType=VARCHAR}, now())
+   </insert>
+
+    <!-- 是否存在相同记录-->
+    <select id="existRecoder" parameterType="java.lang.String" resultType="int">
+       select count(1) from wx_push_log where hash_code = #{hashCode,jdbcType=VARCHAR}
+   </select>
+
+    <insert id="batch" parameterType="java.util.List">
+        INSERT INTO `wx_push_log` ( `p_no`, `card_no`, `result`, `desc_`, `hash_code`, `create_time`)
+        VALUES
+        <foreach collection="list" item="listItem" index="index" separator=",">
+            (
+                #{listItem.pNo,jdbcType=VARCHAR},
+                #{listItem.cardNo,jdbcType=VARCHAR},
+                #{listItem.result,jdbcType=INTEGER},
+                #{listItem.desc,jdbcType=VARCHAR},
+                #{listItem.hashCode,jdbcType=VARCHAR},
+                now()
+            )
+        </foreach>
+
+    </insert>
+</mapper>

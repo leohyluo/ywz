@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DiagnosisArticle">
+
+
+    <select id="queryArticleByMainCode" parameterType="HashMap" resultType="DataRecord">
+        SELECT da.* from diagnosis_article da LEFT JOIN diagnosis_mainsymp_article dma
+		ON da.article_code = dma.article_code
+		WHERE dma.main_symp_code = #{mainSympCode}
+		ORDER BY dma.default_order LIMIT 0,5
+    </select>
+
+	<select id="queryByArticleCode" parameterType="HashMap" resultType="DataRecord">
+		SELECT da.* from diagnosis_article da where da.article_code = #{articleCode}
+	</select>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.commons.core.pojo.DiagnosisDisease">
+
+    <select id="queryDiagnosisDisease" parameterType="HashMap" resultType="DataRecord">
+        select * from diagnosis_disease
+        <where>
+        	<if test="diseaseCodes != null">
+		        and disease_code in
+		        <foreach item="item" index="index" collection="diseaseCodes" open="(" separator="," close=")">
+		            #{item}
+		        </foreach>
+        	</if>
+        	<if test="diseaseName != null">
+        		and disease_name like CONCAT('%',#{diseaseName},'%')
+        	</if>
+        	<if test="diseaseCode != null">
+        		and disease_code = #{diseaseCode}
+        	</if>
+        </where>
+    </select>
+    <select id="getDiagnosisDisease" parameterType="HashMap" resultType="DataRecord">
+        select * from diagnosis_disease where disease_code=#{diseaseCode} limit 1
+    </select>
+    <!-- 根据用户行为获取热门疾病 -->
+	<select id="getUserHotDisease" parameterType="HashMap" resultType="DataRecord">
+		SELECT * from diagnosis_disease dd where dd.threshold > #{threshold} 
+		 AND IFNULL(dd.user_select_count,0) > dd.threshold ORDER BY dd.user_select_count DESC LIMIT 0,#{size}
+	</select>
+	<!-- 获取默认热门疾病 -->
+	<select id="getDefaultHotDisease" parameterType="HashMap" resultType="DataRecord">
+		SELECT * from diagnosis_disease dd ORDER BY dd.default_order DESC LIMIT 0,#{size}
+	</select>
+	<!-- 根据疾病名称查询 -->
+	<select id="getByDiseaseName" parameterType="HashMap" resultType="DataRecord">
+		SELECT * from diagnosis_disease dd where disease_name = #{diseaseName}
+	</select>
+
+	<select id="getAllDiagnosisDisease"  resultType="DataRecord">
+		SELECT * from diagnosis_disease
+	</select>
+</mapper>

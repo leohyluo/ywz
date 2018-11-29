@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.user.mapper.UserInfoMapper" >
+    <resultMap id="userInfo" type="com.alpha.server.rpc.user.pojo.UserInfo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="user_id" jdbcType="BIGINT" property="userId" />
+        <result column="external_user_id" jdbcType="VARCHAR" property="externalUserId" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="birth" jdbcType="TIMESTAMP" property="birth" />
+        <result column="gender" jdbcType="INTEGER" property="gender" />
+        <result column="idcard" jdbcType="VARCHAR" property="idcard" />
+        <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="liver_func_text" jdbcType="VARCHAR" property="liverFuncText" />
+        <result column="liver_func" jdbcType="INTEGER" property="liverFunc" />
+        <result column="renal_func_text" jdbcType="VARCHAR" property="renalFuncText" />
+        <result column="renal_func" jdbcType="INTEGER" property="renalFunc" />
+        <result column="height" jdbcType="VARCHAR" property="height" />
+        <result column="weight" jdbcType="VARCHAR" property="weight" />
+        <result column="menstrual_period" jdbcType="VARCHAR" property="menstrualPeriod" />
+        <result column="special_period" jdbcType="VARCHAR" property="specialPeriod" />
+        <result column="fertility_type" jdbcType="VARCHAR" property="fertilityType" />
+        <result column="vaccination_history_code" jdbcType="VARCHAR" property="vaccinationHistoryCode" />
+        <result column="gestational_age" jdbcType="VARCHAR" property="gestationalAge" />
+        <result column="feed_type" jdbcType="VARCHAR" property="feedType" />
+        <result column="pastmedical_history_code" jdbcType="VARCHAR" property="pastmedicalHistoryCode" />
+        <result column="pastmedical_history_text" jdbcType="VARCHAR" property="pastmedicalHistoryText" />
+        <result column="allergic_history_code" jdbcType="VARCHAR" property="allergicHistoryCode" />
+        <result column="allergic_history_text" jdbcType="VARCHAR" property="allergicHistoryText" />
+        <result column="operation_code" jdbcType="VARCHAR" property="operationCode" />
+        <result column="operation_text" jdbcType="VARCHAR" property="operationText" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+        <result column="in_type" jdbcType="TINYINT" property="inType" />
+        <result column="department_json" jdbcType="VARCHAR" property="departmentList" />
+        <result column="wechar_follow" jdbcType="INTEGER" property="wecharFollow" />
+<!-- 		<result column="department" jdbcType="VARCHAR" property="department" />
+        <result column="cure_time" jdbcType="TIMESTAMP" property="cureTime" /> -->
+        <result column="hospital_code" jdbcType="VARCHAR" property="hospitalCode" />
+        <result column="out_patient_no" jdbcType="VARCHAR" property="outPatientNo" />
+    </resultMap>
+
+    <!-- 根据条件查询用户信息-->
+    <select id="queryUserInfo" resultMap="userInfo" parameterType="HashMap">
+			SELECT id,user_id,external_user_id,user_name,birth,gender,idcard,phone_number,password,parent_id,liver_func,renal_func,height,weight,special_period,fertility_type,gestational_age,feed_type,pastmedical_history_code,pastmedical_history_text,allergic_history_code,allergic_history_text,create_time,last_update_time,in_type,operation_code,operation_text,menstrual_period,vaccination_history_code,pastmedical_history_text
+			 from user_info
+    </select>
+
+    <!-- 根据条件查询用户信息-->
+    <select id="getUserInfoByExternalUserId" resultMap="userInfo" parameterType="HashMap">
+        SELECT id,user_id,external_user_id,user_name,birth,gender,idcard,phone_number,password,parent_id,liver_func,renal_func,height,weight,special_period,fertility_type,gestational_age,feed_type,pastmedical_history_code,pastmedical_history_text,allergic_history_code,allergic_history_text,create_time,last_update_time,in_type,department,cure_time,operation_code,operation_text,menstrual_period,vaccination_history_code,pastmedical_history_text,department_json,wechar_follow,out_patient_no
+        from user_info where external_user_id=#{externalUserId} and in_type=#{inType} LIMIT 1
+    </select>
+    
+    <!-- 根据条件查询用户信息-->
+    <select id="queryByExternalUserId" resultMap="userInfo" parameterType="HashMap">
+        SELECT id,user_id,external_user_id,user_name,birth,gender,idcard,phone_number,password,parent_id,liver_func,renal_func,height,weight,special_period,fertility_type,gestational_age,feed_type,pastmedical_history_code,pastmedical_history_text,allergic_history_code,allergic_history_text,create_time,last_update_time,in_type,department,cure_time,operation_code,operation_text,menstrual_period,vaccination_history_code,pastmedical_history_text,department_json,wechar_follow,out_patient_no
+        from user_info where external_user_id=#{externalUserId} LIMIT 1
+    </select>
+    
+    <!-- 根据条件查询用户信息-->
+    <select id="queryByUserId" resultMap="userInfo" parameterType="java.lang.Long">
+        SELECT id,user_id,external_user_id,user_name,birth,gender,idcard,phone_number,password,parent_id,liver_func,renal_func,height,weight,special_period,fertility_type,gestational_age,feed_type,pastmedical_history_code,pastmedical_history_text,allergic_history_code,allergic_history_text,create_time,last_update_time,in_type,department,cure_time,operation_code,operation_text,menstrual_period,vaccination_history_code,pastmedical_history_text,department_json,wechar_follow,out_patient_no
+        from user_info where user_id=#{userId}
+    </select>
+    
+    <!-- 根据条件查询用户信息-->
+    <select id="find" resultType="DataRecord" parameterType="HashMap">
+        SELECT * from user_info
+        <where>
+        	<if test="userName != null">
+        		and user_name = #{userName}
+        	</if>
+        	<if test="userId != null">
+        		and user_id = #{userId}
+        	</if>
+        	<if test="idcard != null">
+        		and idcard = #{idcard}
+        	</if>
+        	<if test="phoneNumber != null">
+        		and phone_number = #{phoneNumber}
+        	</if>
+            <if test="outPatientNo != null">
+                and out_patient_no = #{outPatientNo}
+            </if>
+        </where>
+    </select>
+
+	<select id="queryUserMemberInfoList" resultType="DataRecord" parameterType="HashMap">
+		SELECT ui.* from user_info ui where 1=1 AND (EXISTS
+	(SELECT 1 from user_member um WHERE um.user_id = #{userId} AND ui.user_id = um.member_id) OR ui.user_id = #{userId})
+	</select>
+	
+	<select id="findbyUserIdList" resultType="DataRecord" parameterType="HashMap">
+		SELECT ui.* from user_info ui where ui.user_id in
+		<foreach item="item" index="index" collection="userIdList" open="(" separator="," close=")">
+					#{item}
+		</foreach>
+	</select>
+	
+	<select id="listByExternalUserId" resultType="DataRecord" parameterType="HashMap">
+        SELECT * from user_info where external_user_id=#{externalUserId}
+    </select>
+
+    <select id="getByOutPatientNo" resultType="DataRecord" parameterType="HashMap">
+        SELECT * from user_info where out_patient_no=#{outPatientNo}
+    </select>
+
+    <insert id="insertByBatch" parameterType="java.util.ArrayList">
+        insert into user_info
+            (
+                user_id,
+                user_name,
+                birth,
+                idcard,
+                create_time,
+                out_patient_no
+            )values
+            <foreach collection="list" item="userInfo" separator=",">
+                (
+                    #{userInfo.userId,jdbcType=BIGINT},
+                    #{userInfo.userName,jdbcType=VARCHAR},
+                    #{userInfo.birth,jdbcType=TIMESTAMP},
+                    #{userInfo.idcard,jdbcType=VARCHAR},
+                    #{userInfo.createTime,jdbcType=TIMESTAMP},
+                    #{userInfo.outPatientNo,jdbcType=VARCHAR}
+                )
+            </foreach>
+    </insert>
+</mapper>

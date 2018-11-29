@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.commons.core.mapper.HospitalizedNoticeNewMapper">
+     <insert id="saveDo" parameterType="com.alpha.commons.core.pojo.HospitalizedNoticeNew" >
+         INSERT INTO hospitalized_notice
+         <trim suffixOverrides="," suffix=")" prefix="(" >
+             <if test="id != null">
+                 id,
+             </if>
+             <if test="age != null">
+                 age,
+             </if>
+             <if test="birthday != null">
+                 birthday,
+             </if>
+             <if test="sex != null">
+                 sex,
+             </if>
+             <if test="patientName != null">
+                 patient_name,
+             </if>
+             <if test="outPatientNo != null">
+                 out_patient_no,
+             </if>
+             <if test="payType != null">
+                 payType,
+             </if>
+             <if test="hosNo != null">
+                 hosNo,
+             </if>
+             <if test="inDep != null">
+                 inDep,
+             </if>
+             <if test="inType != null">
+                 inType,
+             </if>
+             <if test="inCase != null">
+                 inCase,
+             </if>
+             <if test="inChannel != null">
+                 inChannel,
+             </if>
+             <if test="diagnosis != null">
+                 diagnosis,
+             </if>
+             <if test="isFect != null">
+                 isFect,
+             </if>
+             <if test="notifyTime != null">
+                 notifyTime,
+             </if>
+             <if test="disDesc != null">
+                 disDesc,
+             </if>
+             <if test="contactPhone != null">
+                 contactPhone,
+             </if>
+             <if test="createTime != null">
+                 create_time,
+             </if>
+             <if test="updateTime != null">
+                 update_time,
+             </if>
+             <if test="hospitalCode != null">
+                 hospital_code
+             </if>
+         </trim>
+         <trim suffixOverrides="," suffix=")" prefix="values (" >
+             <if test="id != null">
+                #{id},
+             </if>
+             <if test="age != null">
+                 #{age},
+             </if>
+             <if test="birthday != null">
+                 #{birthday},
+             </if>
+             <if test="sex != null">
+                 #{sex},
+             </if>
+             <if test="patientName != null">
+                 #{patientName},
+             </if>
+             <if test="outPatientNo != null">
+                 #{outPatientNo},
+             </if>
+             <if test="payType != null">
+                 #{payType},
+             </if>
+             <if test="hosNo != null">
+                 #{hosNo},
+             </if>
+             <if test="inDep != null">
+                 #{inDep},
+             </if>
+             <if test="inType != null">
+                 #{inType},
+             </if>
+             <if test="inCase != null">
+                 #{inCase},
+             </if>
+             <if test="inChannel != null">
+                 #{inChannel},
+             </if>
+             <if test="diagnosis != null">
+                 #{diagnosis},
+             </if>
+             <if test="isFect != null">
+                 #{isFect},
+             </if>
+             <if test="notifyTime != null">
+                 #{notifyTime},
+             </if>
+             <if test="disDesc != null">
+                 #{disDesc},
+             </if>
+             <if test="contactPhone != null">
+                 #{contactPhone},
+             </if>
+             <if test="createTime != null">
+                 #{createTime},
+             </if>
+             <if test="updateTime != null">
+                 #{updateTime},
+             </if>
+             <if test="hospitalCode != null">
+                 #{hospitalCode}
+             </if>
+         </trim>
+
+     </insert>
+    <select id="selectDo" resultType="com.alpha.commons.core.pojo.HospitalizedNoticeNew" >
+          SELECT * from hospitalized_notice WHERE out_patient_no=#{outPatientNo}
+    </select>
+
+    <select id="selectAllNotice" resultType="com.alpha.commons.core.pojo.HospitalizedNoticeNew">
+        SELECT * from hospitalized_notice WHERE `status` =0 and notifyTime >=date_sub(now(),INTERVAL 30 MINUTE)
+    </select>
+
+    <insert id="insertBatch" parameterType="com.alpha.commons.core.pojo.HospitalizedNoticeNew">
+        INSERT ignore INTO hospitalized_notice(out_patient_no,patient_name,birthday,sex,age,
+        inDep,inType,inCase,inChannel,diagnosis,isFect,disDesc,contactPhone,
+        doctorName,notifyTime,noticeId,create_time
+        ) VALUES
+        <foreach collection="list" separator="," item="item" >
+            (
+             #{item.outPatientNo},#{item.patientName},#{item.birthday},#{item.sex},#{item.age},#{item.inDep},
+             #{item.inType},#{item.inCase},#{item.inChannel},#{item.diagnosis},#{item.isFect},#{item.disDesc},
+             #{item.contactPhone},#{item.doctorName},#{item.notifyTime},#{item.noticeId},#{item.createTime}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

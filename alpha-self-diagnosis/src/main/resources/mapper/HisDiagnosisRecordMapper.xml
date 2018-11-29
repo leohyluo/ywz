@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.server.rpc.his.pojo.HisDiagnosisRecord" >
+
+    <select id="queryByDiagnosisId" resultType="DataRecord" parameterType="HashMap">
+        SELECT * from his_diagnosis_record WHERE diagnosis_id = #{diagnosisId}
+    </select>
+</mapper>

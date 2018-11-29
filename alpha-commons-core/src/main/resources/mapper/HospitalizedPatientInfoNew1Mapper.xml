@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.commons.core.mapper.HospitalizedPatientInfoNew1Mapper">
+     <insert id="insertHospitalizedPatientInfoNew1" parameterType="com.alpha.commons.core.pojo.HospitalizedPatientInfoNew1">
+           insert into hospitalized_patient_info_new
+           <trim  suffix=")" prefix="(" suffixOverrides=",">
+               <if test="id !=null">
+                   id,
+               </if>
+               <if test="patientName !=null">
+                   patient_name,
+               </if>
+               <if test="sex !=null">
+                   sex,
+               </if>
+               <if test="birthday !=null">
+                   birthday,
+               </if>
+               <if test="nation !=null">
+                   nation,
+               </if>
+               <if test="nationality !=null">
+                   nationality,
+               </if>
+               <if test="hospitalCode !=null">
+                   hospital_code,
+               </if>
+               <if test="outPatientNo !=null">
+                   out_patient_no,
+               </if>
+               <if test="contactPhone !=null">
+                   contact_phone,
+               </if>
+               <if test="contactName !=null">
+                   contact_name,
+               </if>
+               <if test="contactAddr !=null">
+                   contact_addr,
+               </if>
+               <if test="contactIdCard !=null">
+                   contact_idcard,
+               </if>
+               <if test="relationship !=null">
+                   relationship,
+               </if>
+               <if test="patientCertiType !=null">
+                   patient_certiType,
+               </if>
+               <if test="patientCertiNo !=null">
+                   patient_certiNo,
+               </if>
+               <if test="nativeAddr !=null">
+                   native_addr,
+               </if>
+               <if test="homePlace !=null">
+                   homeplace,
+               </if>
+               <if test="school !=null">
+                   school,
+               </if>
+               <if test="signUrl !=null">
+                   signUrl,
+               </if>
+               <if test="isHospital !=null">
+                   ishospitalized,
+               </if>
+               <if test="address !=null">
+                   address,
+               </if>
+               <if test="cardNo !=null">
+                   card_no,
+               </if>
+               <if test="hosNo !=null">
+                   hosNo,
+               </if>
+               <if test="mailingAddr !=null">
+                   mailing_address,
+               </if>
+               <if test="registeredPermanent !=null">
+                   registered_permanent,
+               </if>
+               <if test="bedNo !=null">
+                   bed_no,
+               </if>
+               <if test="patAdmCondition !=null">
+                   pat_adm_condition,
+               </if>
+               <if test="admittedBy !=null">
+                   admitted_by,
+               </if>
+               <if test="consultingDoctor !=null">
+                   consulting_doctor,
+               </if>
+               <if test="occupation !=null">
+                   occupation,
+               </if>
+               <if test="dischargeDisposition !=null">
+                   discharge_disposition,
+               </if>
+               <if test="wardDischargeFrom !=null">
+                   ward_discharge_from,
+               </if>
+               <if test="deptDischargeFrom !=null">
+                   dept_discharge_from,
+               </if>
+               <if test="dischargeDateTime !=null">
+                   discharge_date_time,
+               </if>
+               <if test="admissionDateTime !=null">
+                   admission_data_time,
+               </if>
+               <if test="insurance !=null">
+                   insurence,
+               </if>
+               <if test="insuranceNo !=null">
+                   insurance_no,
+               </if>
+               <if test="nursingGrade !=null">
+                   nursing_grade,
+               </if>
+               <if test="visitTimes !=null">
+                   visit_times,
+               </if>
+               <if test="diagnosis !=null">
+                   diagnosis,
+               </if>
+               <if test="status !=null">
+                   status,
+               </if>
+               <if test="inpNo !=null">
+                   inp_no,
+               </if>
+               <if test="patientId !=null">
+                   patient_id,
+               </if>
+               <if test="serviceAgency !=null">
+                   service_agency,
+               </if>
+               <if test="nativePlace !=null">
+                   native_place,
+               </if>
+               <if test="marialStatus !=null">
+                   marital_status,
+               </if>
+               <if test="xzz !=null">
+                   xzz,
+               </if>
+               <if test="company !=null">
+                   company,
+               </if>
+               <if test="insuranceType !=null">
+                   insurance_type,
+               </if>
+               <if test="createTime !=null">
+                   create_time,
+               </if>
+               <if test="updateTime !=null">
+                   update_time
+               </if>
+
+           </trim>
+           <trim prefix="values (" suffix=")" suffixOverrides=",">
+               <if test="id !=null">
+                   #{id},
+               </if>
+               <if test="patientName !=null">
+                   #{patientName},
+               </if>
+               <if test="sex !=null">
+                   #{sex},
+               </if>
+               <if test="birthday !=null">
+                   #{birthday},
+               </if>
+               <if test="nation !=null">
+                   #{nation},
+               </if>
+               <if test="nationality !=null">
+                   #{nationality},
+               </if>
+               <if test="hospitalCode !=null">
+                   #{hospitalCode},
+               </if>
+               <if test="outPatientNo !=null">
+                   #{outPatientNo},
+               </if>
+               <if test="contactPhone !=null">
+                   #{contactPhone},
+               </if>
+               <if test="contactName !=null">
+                   #{contactName},
+               </if>
+               <if test="contactAddr !=null">
+                   #{contactAddr},
+               </if>
+               <if test="contactIdCard !=null">
+                   #{contactIdCard},
+               </if>
+               <if test="relationship!=null">
+                   #{relationship},
+               </if>
+               <if test="patientCertiType !=null">
+                   #{patientCertiType},
+               </if>
+               <if test="patientCertiNo !=null">
+                   #{patientCertiNo},
+               </if>
+               <if test="nativeAddr !=null">
+                   #{nativeAddr},
+               </if>
+               <if test="homePlace  !=null">
+                   #{homePlace},
+               </if>
+               <if test="school !=null">
+                   #{school},
+               </if>
+               <if test="signUrl !=null">
+                   #{signUrl},
+               </if>
+               <if test="isHospital !=null">
+                   #{isHospital},
+               </if>
+               <if test="address !=null">
+                   #{address},
+               </if>
+               <if test="cardNo !=null">
+                   #{cardNo},
+               </if>
+               <if test="hosNo !=null">
+                   #{hosNo},
+               </if>
+               <if test="mailingAddr !=null">
+                   #{mailingAddr},
+               </if>
+               <if test="registeredPermanent !=null">
+                   #{registeredPermanent},
+               </if>
+               <if test="bedNo !=null">
+                   #{bedNo},
+               </if>
+               <if test="patAdmCondition !=null">
+                   #{patAdmCondition},
+               </if>
+               <if test="admittedBy !=null">
+                   #{admittedBy},
+               </if>
+               <if test="consultingDoctor !=null">
+                   #{consultingDoctor},
+               </if>
+               <if test="occupation !=null">
+                   #{occupation},
+               </if>
+               <if test="dischargeDisposition !=null">
+                   #{dischargeDisposition},
+               </if>
+               <if test="wardDischargeFrom !=null">
+                   #{wardDischargeFrom},
+               </if>
+               <if test="deptDischargeFrom !=null">
+                   #{deptDischargeFrom},
+               </if>
+               <if test="dischargeDateTime !=null">
+                   #{dischargeDateTime},
+               </if>
+               <if test="admissionDateTime !=null">
+                   #{admissionDateTime},
+               </if>
+               <if test="insurance !=null">
+                   #{insurance},
+               </if>
+               <if test="insuranceNo !=null">
+                   #{insuranceNo},
+               </if>
+               <if test="nursingGrade !=null">
+                   #{nursingGrade},
+               </if>
+               <if test="visitTimes !=null">
+                   #{visitTimes},
+               </if>
+               <if test="diagnosis !=null">
+                   #{diagnosis},
+               </if>
+               <if test="status !=null">
+                   #{status},
+               </if>
+               <if test="inpNo !=null">
+                   #{inpNo},
+               </if>
+               <if test="patientId !=null">
+                   #{patientId},
+               </if>
+               <if test="serviceAgency !=null">
+                   #{serviceAgency},
+               </if>
+               <if test="nativePlace !=null">
+                   #{nativePlace},
+               </if>
+               <if test="marialStatus !=null">
+                   #{marialStatus},
+               </if>
+               <if test="xzz !=null">
+                   #{xzz},
+               </if>
+               <if test="company !=null">
+                   #{company},
+               </if>
+               <if test="insuranceType !=null">
+                   #{insuranceType},
+               </if>
+               <if test="createTime !=null">
+                   #{createTime},
+               </if>
+               <if test="updateTime !=null">
+                   #{updateTime}
+               </if>
+           </trim>
+     </insert>
+
+<select id="getPatientHospitalizedHis" resultType="com.alpha.commons.core.pojo.HospitalizedAo" >
+    SELECT patient_name as patientName,sex,birthday,nationality,nation,out_patient_no as outPatientNo,
+    contact_phone as contactPhone,contact_name as contactName,contact_addr as contactAddr,contact_idcard as contactIdCard,
+    relationship,insurance_type as insuranceType,native_addr as nativeAddr,patient_certiNo as patientCertiNo,
+    signUrl,ishospitalized as isHospital,xzz as address,homeplace as homePlace,create_time as createTime,card_no as cardNo,registered_permanent as registeredPermanent
+    from hospitalized_patient_info_new WHERE out_patient_no=#{outPatientNo}
+</select>
+
+    <select id="selectMaxVisit" resultType="com.alpha.commons.core.pojo.HospitalizedPatientInfoNew1">
+          SELECT * from hospitalized_patient_info_new WHERE out_patient_no=#{outPatientNo} order by visit_times desc limit 1
+    </select>
+
+    <select id="hisPatientInfo" resultType="com.alpha.commons.core.pojo.HospitalizedPatientInfoNew1">
+        SELECT * from view_hospitalized_patient_info WHERE 1=1
+        <if test="outPatientNo != null and outPatientNo != ''">
+            and out_patient_no=#{outPatientNo}
+        </if>
+        <if test="patientName != null and patientName != ''">
+            and patient_name=#{patientName}
+        </if>
+        and noticeId is not  null
+        order by id desc limit 1
+
+    </select>
+    <select id="getByNoticeIdAndStatus" resultType="com.alpha.commons.core.pojo.HospitalizedPatientInfoNew1">
+        SELECT * from hospitalized_patient_info_new WHERE noticeId = #{noticeId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        limit 1
+    </select>
+
+</mapper>

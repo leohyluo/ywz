@@ -1,0 +1,140 @@
+#注册中心配置
+service:
+  register:
+    center:
+      ip: 127.0.0.1
+      hostname: peer1
+      port: 19081
+    center2:
+      ip: 127.0.0.1
+      hostname: peer2
+      port: 19082
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${service.register.center.ip}:${service.register.center.port}/eureka/
+    registry-fetch-interval-seconds: 5 #拉取服务注册信息时间间隔,默认为30秒
+  instance:
+    lease-renewal-interval-in-seconds: 5 #心跳时间,默认为30秒
+    lease-expiration-duration-in-seconds: 10 #若eureka server在这时间内没收到心跳则移除该instance,默认为90秒
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+#数据库配置
+db:
+  host: 192.168.29.191
+  port: 3306
+  name: dr_alpha_ent
+  public-key: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJBD0vrcYsoS6TtQUGQzdCq9Z6Mw4mBBstzgjCZfPp8G0L8PNbWBVPpUUNpyyC9qdbvNr4l9a2HirzfGKWkY5YkCAwEAAQ==
+#数据源配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: zhyx
+    password: cvTggOXUM20IwI41EZfcpynXO4g3O8zToO7JG+lO0IZShyW4vPkSbxkgg+LG8Bsewo1+d1dAYsF9dU5Qnmpfug==
+    url: jdbc:mysql://${db.host}:${db.port}/${db.name}?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true&allowMultiQueries=true
+    druid:
+      filter-class-names: stat
+      filters: stat,config
+      #初始化连接大小
+      initial-size: 8
+      #最小空闲连接数
+      min-idle: 5
+      #最大连接数
+      max-active: 10
+      #查询超时时间
+      query-timeout: 6000
+      #事务查询超时时间
+      transaction-query-timeout: 6000
+      #关闭空闲连接超时时间
+      remove-abandoned-timeout: 1800
+#mybatis配置
+#mybatis:
+#  config-location: classpath:mybatis-config.xml
+#  mapper-locations: classpath:mapper/*.xml,classpath*:mapper/*Mapper.xml
+#ftp服务器配置
+ftp:
+  server:
+    ip: 120.76.153.220
+    port: 52151
+    userName: ftpuser
+    password: zhys%vVUUqy#igK3Ft?I
+  alpha:
+    save-path:
+      qr-code: alpha/images/qrcode
+#微信公众号配置
+wechar:
+    menu:
+      #就诊记录
+      diagnosisRecord: http%3A%2F%2Fjcyx18081.ebmsz.com%2Falpha%2Frecord.html
+      #阿尔法医生
+      alpha: http%3A%2F%2Fjcyx18081.ebmsz.com%2Falpha%2Falpha.html
+#服务器地址配置
+alpha:
+  #前端服务器地址
+  h5:
+    wecharUrl: http://192.168.29.66:8080/alpha/ywz_.html
+    url: http://192.168.29.66:8080/alpha/ywz_.html
+    # https://www.zndaozhen.com/alpha/link/#  http://192.168.100.10:8080/ywz_.html#link/555
+    linkUrl: http://192.168.29.66:8080/alpha/ywz_.html#link/@
+    medicalUrl: http://192.168.29.66:8080/alpha/case/index.html
+  #诊断模块服务器地址
+  diagnosis:
+      url: http://localhost:19092
+#图片上传路径
+imgUpload:
+  imgRoot: alpha/images/hospitalized
+#调用医院方接口参数化：
+hisSevice:
+    #获取挂号地址
+    registrationWSDL: http://172.16.240.124:7811/BS10015?wsdl
+    registrationFID: BS10015
+    #获取门诊地址
+    outpatientWSDL: http://172.16.240.124:7808/BS10007?wsdl
+    outpatientFID: BS10007
+    #获取住院信息地址
+    hospitalizedWSDL: http://172.16.240.124:7808/BS10008?wsdl
+    hospitalizedFID: BS10008
+    #获取住院通知地址：
+    hositalizedNoticeWDSL: http://172.16.240.124:7811/BS10023?wsdl
+    hositalizedNoticeFID: BS10023
+    #医院方调我们接口的加密钥匙：
+    key: zhihuiyixue@#$%123456
+hisSwitch:
+  param: 0
+weix:
+  pushUrl: http://121.15.136.85:17001/hdepc/services/hisWebService?wsdl
+address: com_dev
+# F_SZET_ZHK(深圳市儿童医院综合科) F_BJ_FK(北京妇科)
+versionFlag: F_SZET_ZHK
+#住院通知单推送连接地址
+notice:
+  linkUrl: https://www.zndaozhen.com/alpha/ywz_.html#/user-info/2/1/
+redis:
+  ip: 192.168.29.191
+  port: 6382
+  pwd: redis_ywz
+ #1 A001儿童，A002光明 A003逸夫
+hospital:
+  code: A001
+
+Nj_WDSL: http://10.0.21.164:8080/YFYYServiceCommon.asmx?wsdl
+push:
+  appointment:
+    # 预约成功时推送
+    success: patientName家长，您已预约成功。为了医生更准确地诊断孩子的病情，避免漏诊，请务必先回答几个关于孩子的问题。
+    # 就诊前一天晚上9点未完成预问诊时推送
+    dayBefore: patientName家长您好！我是patientName的医生doctorName，明天是您的就诊时间，为了给宝宝提供更好的诊疗服务，请您今晚先提供孩子的病情。
+    # 就诊当天早上7点半未完成预问诊时推送
+    today: patientName家长，今天是您孩子的就诊时间，我是宝宝的医生doctorName，为了更好地帮助到您的宝宝，请收到本消息后，先提供孩子的病情再到医院就诊。
+    # 取号时未完成预问诊时推送
+    registed: patientName家长，您已取号成功。我是宝宝的医生doctorName，为了给孩子提供更精准的诊疗服务，请您先提供孩子病情，再等候就诊。
+    #病情确认
+    confirm: 我是孩子的医生doctorName，若孩子的病情有变化，请您核对并更新您宝宝的病情。若没有，请忽略本消息。
+  afterDesc: 家长，为了医生更准确地诊断孩子的病情，避免漏诊，就诊前请您先回答几个关于孩子的问题。
+  getNoDesc: 家长，您好！您还未完成预问诊，请立刻点击“详情”，完成预问诊。
+  comfireDesc: 请核对并更新您宝宝的病情。

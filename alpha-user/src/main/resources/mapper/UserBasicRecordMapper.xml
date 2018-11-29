@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.alpha.user.mapper.UserBasicRecordMapper">
+	<resultMap id="BaseResultMap" type="com.alpha.server.rpc.user.pojo.UserBasicRecord">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+	    <result column="user_id" jdbcType="BIGINT" property="userId" />
+	    <result column="diagnosis_id" jdbcType="BIGINT" property="diagnosisId" />
+	    <result column="birth" jdbcType="DATE" property="birth" />
+	    <result column="liver_func" jdbcType="INTEGER" property="liverFunc" />
+	    <result column="liver_func_text" jdbcType="VARCHAR" property="liverFuncText" />
+	    <result column="renal_func_text" jdbcType="VARCHAR" property="renalFuncText" />
+	    <result column="renal_func" jdbcType="INTEGER" property="renalFunc" />
+	    <result column="height" jdbcType="VARCHAR" property="height" />
+	    <result column="weight" jdbcType="VARCHAR" property="weight" />
+	    <result column="menstrual_period" jdbcType="VARCHAR" property="menstrualPeriod" />
+	    <result column="special_period" jdbcType="VARCHAR" property="specialPeriod" />
+	    <result column="fertility_type" jdbcType="VARCHAR" property="fertilityType" />
+	    <result column="gestational_age" jdbcType="VARCHAR" property="gestationalAge" />
+	    <result column="feed_type" jdbcType="VARCHAR" property="feedType" />
+	    <result column="vaccination_history_text" jdbcType="VARCHAR" property="vaccinationHistoryText" />
+	    <result column="pastmedical_history_code" jdbcType="VARCHAR" property="pastmedicalHistoryCode" />
+	    <result column="pastmedical_history_text" jdbcType="VARCHAR" property="pastmedicalHistoryText" />
+	    <result column="allergic_history_code" jdbcType="VARCHAR" property="allergicHistoryCode" />
+	    <result column="allergic_history_text" jdbcType="VARCHAR" property="allergicHistoryText" />
+	    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+	    <result column="incre_flag" jdbcType="VARCHAR" property="increFlag" />
+	    <result column="opera_flag" jdbcType="VARCHAR" property="operaFlag" />
+	    <result column="operate_type" jdbcType="VARCHAR" property="operateType" />
+	    <result column="data_version" jdbcType="INTEGER" property="dataVersion" />
+	    <result column="version_evolution" jdbcType="VARCHAR" property="versionEvolution" />
+	    <result column="source_" jdbcType="VARCHAR" property="source" />
+	    <result column="version_" jdbcType="VARCHAR" property="version" />
+	    <result column="creator" jdbcType="VARCHAR" property="creator" />
+	    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	    <result column="reviewer" jdbcType="VARCHAR" property="reviewer" />
+	    <result column="review_time" jdbcType="TIMESTAMP" property="reviewTime" />
+ 	</resultMap>
+ 	
+ 	<select id="findByDiagnosisId" resultType="DataRecord" parameterType="HashMap">
+ 		select ubr.*,hi.hospital_name as 'hospitalName' from user_basic_record ubr
+			LEFT JOIN hospital_info hi
+			ON ubr.hospital_code = hi.hospital_code
+ 		<where>
+ 			<if test="diagnosisId != null">
+ 				ubr.diagnosis_id = #{diagnosisId}
+ 			</if>
+ 		</where>
+ 	</select>
+ 	
+ 	<select id="findLast" resultType="DataRecord" parameterType="HashMap">
+ 		select * from user_basic_record
+ 		<where>
+ 			<if test="userId != null">
+ 				and user_id = #{userId}
+ 			</if>
+ 			<if test="presentIllnessHistory != null">
+ 				and char_length(present_illness_history) > 0
+ 			</if>
+ 			<if test="status">
+ 				and status = #{status}
+ 			</if>
+ 			ORDER BY create_time desc
+ 		</where>
+ 		limit 0,1
+ 	</select>
+ 	
+ 	<select id="findFinishByUser" resultType="DataRecord" parameterType="HashMap">
+ 		select ubr.*,hi.hospital_name as 'hospitalName' from user_basic_record ubr
+			LEFT JOIN hospital_info hi
+			ON ubr.hospital_code = hi.hospital_code
+ 		<where>
+ 			<if test="userId != null">
+ 				and ubr.user_id = #{userId}
+ 			</if>
+ 			<if test="status != null">
+ 				and ubr.status = #{status}
+ 			</if>
+ 			<if test="hisRegisterNo != null">
+ 				and ubr.his_register_no = #{hisRegisterNo}
+ 			</if>
+ 			<if test="finishDate">
+ 				and DATE(ubr.create_time) = #{finishDate}
+ 			</if>
+ 			ORDER BY ubr.create_time desc
+ 		</where>
+ 	</select>
+
+	<select id="listFinishByPno" resultType="DataRecord" parameterType="HashMap">
+		select * from user_basic_record ubr
+		<where>
+			<if test="status != null">
+				and (ubr.status = #{status} or ubr.status = -10)
+			</if>
+			<if test="hisRegisterNo != null">
+				and ubr.his_register_no = #{hisRegisterNo}
+			</if>
+			<if test="type">
+				and type = #{type}
+			</if>
+			ORDER BY ubr.create_time desc
+		</where>
+	</select>
+ 	 	
+ 	<select id="findByLastMonth" parameterType="HashMap" resultType="DataRecord">
+ 		<![CDATA[
+	 		SELECT * from user_basic_record
+			 WHERE DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= create_time
+			 and member_id = #{memberId}
+ 		]]>
+ 		<if test="pastmedicalHistoryCodeNotNull != null">
+	 		and pastmedical_history_code is not null
+ 		</if>
+ 		<if test="allergicHistoryCodeNotNull != null">
+ 			and allergic_history_code is not null
+ 		</if>
+ 		<if test="weightNotNull != null">
+ 			and weight is not null
+ 		</if>
+			 ORDER BY create_time desc
+ 	</select>
+ 	
+ 	<select id="findTemplateId" parameterType="HashMap" resultType="String">
+ 		SELECT template_id from diagnosis_main_symptoms where symp_code 
+		=
+		(SELECT symp_code from user_diagnosis_detail where diagnosis_id = #{diagnosisId} and char_length(symp_code) > 0 limit 0, 1)
+ 	</select>
+ 	
+ 	<!-- 查找当天未确诊的数据 -->
+ 	<select id="findUnComfirmOnToday" parameterType="HashMap" resultType="DataRecord">
+ 		SELECT * from user_basic_record ubr where DATE(ubr.create_time) = CURDATE() AND ubr.`status` = #{status}
+ 	</select>
+ 	
+ 	<!-- 获取用户所有就诊记录 -->
+ 	<select id="findByUserId" parameterType="HashMap" resultType="DataRecord">
+ 		select ubr.*,hi.hospital_name as 'hospitalName',hi.hospital_icon as 'hospitalLogo' from user_basic_record ubr
+			LEFT JOIN hospital_info hi ON ubr.hospital_code = hi.hospital_code 
+ 			where ubr.user_id = #{userId} and ubr.status >= 10 order by ubr.create_time desc
+ 	</select>
+ 	
+ 	<!-- 查询用户最后一条就诊记录 -->
+ 	<select id="findLastFinishByUser" resultType="DataRecord" parameterType="HashMap">
+ 		select * from user_basic_record where user_id = #{userId} and status >= 10 ORDER BY create_time desc limit 0,1
+ 	</select>
+ 	
+ 	<!-- 查找当天未确诊并且已关注微信公众号的数据的数据 -->
+ 	<select id="findWecharUserUnFinishOnToday" resultType="DataRecord" parameterType="HashMap">
+ 		SELECT ubr.* FROM user_basic_record ubr
+		INNER JOIN user_info ui
+		ON ubr.user_id = ui.user_id
+		where ubr.`status` != #{status}
+		AND DATE(ubr.create_time) = CURDATE()
+		AND CHAR_LENGTH(ui.external_user_id) > 0
+		AND ui.wechar_follow = 1
+		AND ifnull(ubr.queue_info,'') = ''
+ 	</select>
+ 	
+ 	<!-- 查找当天未确诊并且已关注微信公众号的数据的数据 -->
+ 	<select id="findWecharUserUnFinishOnTodayByUserId" resultType="DataRecord" parameterType="HashMap">
+ 		SELECT ubr.* FROM user_basic_record ubr
+		INNER JOIN user_info ui
+		ON ubr.user_id = ui.user_id
+		where ubr.`status` != #{status}
+		AND DATE(ubr.create_time) = CURDATE()
+		AND CHAR_LENGTH(ui.external_user_id) > 0
+		AND ui.wechar_follow = 1
+		AND ubr.user_id = #{userId}
+ 	</select>
+
+	<!-- 根据诊断id查询已完成的预问诊 -->
+	<select id="getByDiagnosisIdAndStatus" resultType="DataRecord" parameterType="HashMap">
+		SELECT * FROM user_basic_record ubr where ubr.diagnosis_id = #{diagnosisId} and ubr.`status` = #{status}
+	</select>
+
+	<!-- 根据医院编码和门诊号获取预问诊记录 -->
+	<select id="queryByHospitalCodeAndHisRegisterNo" resultType="DataRecord" parameterType="HashMap">
+		SELECT a.* from user_basic_record a INNER JOIN his_register_yygh b on a.his_register_no =b.yno
+		WHERE  a.`status`=10 and b.pno = #{hisRegisterNo}
+		UNION ALL
+		<!--在取号阶段完成预问诊-->
+		SELECT ubr.* FROM user_basic_record ubr
+		INNER JOIN his_register_record hrr ON ubr.his_register_no = hrr.pno
+		AND hrr.pno = #{hisRegisterNo} and ubr.status = 10
+	</select>
+
+	<!-- 取现场号的预问诊记录 -->
+	<select id="getForLive" resultType="DataRecord" parameterType="HashMap">
+		select ubr.* from user_basic_record ubr INNER JOIN his_register_yygh hry on ubr.his_register_no = hry.pno and hry.pno = #{pno} and (hry.type = 1 or hry.type = 3) and ubr.status = 10 order by ubr.create_time desc
+	</select>
+
+	<!-- 取预约号的预问诊记录 -->
+	<select id="getForAppointment" resultType="DataRecord" parameterType="HashMap">
+		select ubr.* from user_basic_record ubr INNER JOIN his_register_yygh hry on ubr.his_register_no = hry.yno and hry.yno = #{pno} and hry.type = 2 and ubr.status = 10 order by ubr.create_time desc
+	</select>
+
+	<!--预约后线下取号查询有没有在预约阶段或取号阶段完成过预问诊-->
+	<select id="listFinishByAppointmentOrOffLine" resultType="DataRecord" parameterType="HashMap">
+		<!--在预约阶段完成预问诊
+ 		SELECT ubr.* FROM user_basic_record ubr
+ 		INNER JOIN his_register_record hrr ON ubr.his_register_no = hrr.pno
+ 				AND hrr.pno = (select IFNULL(hrr2.pno, '-1') from his_register_record hrr2 where hrr2.fetch_complete = #{pno} limit 1)
+ 		AND ubr. STATUS = 10 -->
+
+		SELECT a.* from user_basic_record a INNER JOIN his_register_yygh b on a.his_register_no =b.yno
+		WHERE  a.`status`=10 and b.pno = #{pno}
+		UNION ALL
+		<!--在取号阶段完成预问诊-->
+		SELECT ubr.* FROM user_basic_record ubr
+		INNER JOIN his_register_record hrr ON ubr.his_register_no = hrr.pno
+		AND hrr.pno = #{pno} and ubr.status = 10
+	</select>
+
+	<select id="findByMedicalList" resultType="DataRecord" parameterType="HashMap">
+		select t2.out_patient_no patientNo,
+		t.user_id userId,
+		t2.user_name userName,
+		case 	t2.gender
+		when 1 then '女'
+		when 2 then '男'
+		end as sex,
+		t.diagnosis_id dianosisId,
+		t1.main_symptom mainSympt,
+		DATE_FORMAT(t1.create_time, '%Y-%m-%d %H-%m') as time
+		FROM
+		user_basic_record t
+		LEFT JOIN user_medical_record t1 ON t.diagnosis_id = t1.diagnosis_id
+		LEFT JOIN user_info t2 on t.user_id = t2.user_id
+		WHERE
+		t.STATUS = 10 ORDER BY t1.create_time desc limit #{pageIndex}, #{pageCount}
+	</select>
+
+	<select id="findByMedicalListCount" resultType="int">
+		select count(1) c
+		FROM
+		user_basic_record t
+		LEFT JOIN user_medical_record t1 ON t.diagnosis_id = t1.diagnosis_id
+		LEFT JOIN user_info t2 on t.user_id = t2.user_id
+		WHERE
+		t.STATUS = 10
+	</select>
+
+</mapper>

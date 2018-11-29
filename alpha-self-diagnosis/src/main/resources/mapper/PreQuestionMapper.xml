@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alpha.self.diagnosis.mapper.PreQuestionMapper">
+	<resultMap type="com.alpha.server.rpc.diagnosis.pojo.PreQuestion" id="BaseResultMap">
+		<id property="id" column="id"/>
+		<result property="questionCode" column="question_code"/>
+		<result property="title" column="title"/>
+		<result property="popuTitle" column="popu_title"/>
+		<result property="gender" column="gender"/>
+		<result property="minAge" column="min_age"/>
+		<result property="maxAge" column="max_age"/>
+		<result property="defaultOrder" column="default_order"/>
+		<result property="questionType" column="question_type"/>
+		<result property="displayType" column="display_type"/>
+		<result property="isShow" column="is_show"/>
+		<result property="appType" column="app_type"/>
+		<result property="parentQuestionCode" column="parent_question_code"/>
+		<result property="createTime" column="create_time"/>
+		<result property="updateTime" column="update_time"/>
+	</resultMap>
+
+	<select id="getByQuestionCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT * from pre_question where question_code = #{questionCode} limit 1
+	</select>
+
+	<select id="getNextQuestion" parameterType="com.alpha.server.rpc.diagnosis.pojo.PreQuestion" resultMap="BaseResultMap">
+		SELECT * from pre_question
+		<where>
+			is_show = 1 and (app_type is null or app_type = #{appType})
+			<if test="gender != null">
+				and (gender is null or gender = #{gender})
+			</if>
+			<if test="age != null">
+				<![CDATA[
+					and (min_age is null or min_age <= #{age}) and (max_age is null or max_age >= #{age})
+				]]>
+			</if>
+		</where>
+		and IFNULL(parent_question_code,'') = ''
+		and question_code != 2000
+		and default_order > #{defaultOrder} LIMIT 1
+	</select>
+
+	<select id="getSubQuestions" parameterType="com.alpha.server.rpc.diagnosis.pojo.PreQuestion" resultMap="BaseResultMap">
+		SELECT * from pre_question
+		<where>
+			is_show = 1 and (app_type is null or app_type = #{appType})
+			<if test="gender != null">
+				and (gender is null or gender = #{gender})
+			</if>
+			<if test="age != null">
+				<![CDATA[
+					and (min_age is null or min_age <= #{age}) and (max_age is null or max_age >= #{age})
+				]]>
+			</if>
+		</where>
+		and parent_question_code = #{parentQuestionCode}
+		order by default_order
+	</select>
+</mapper>

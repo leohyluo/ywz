@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.his.dao.impl.HospitalizedNoticeDaoImpl">
+
+    <!--根据住院编号查询住院记录-->
+    <select id="queryByHospitalCodeAndHosNo" resultType="DataRecord" parameterType="HashMap">
+        select * from hospitalized_notice where hospital_code = #{hospitalCode} and hosNo = #{hosNo}
+    </select>
+
+    <!--根据门诊号查询住院记录-->
+    <select id="queryByHospitalCodeAndOutPatientNo" resultType="DataRecord" parameterType="HashMap">
+        select * from hospitalized_notice where hospital_code = #{hospitalCode} and out_patient_no = #{outPatientNo}
+    </select>
+
+    <resultMap id="NoticeResultMap" type="com.alpha.server.rpc.his.pojo.HospitalizedNotice">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="out_patient_no" jdbcType="VARCHAR" property="outPatientNo"/>
+        <result column="payType" jdbcType="VARCHAR" property="paytype"/>
+        <result column="inDep" jdbcType="VARCHAR" property="indep"/>
+        <result column="inType" jdbcType="VARCHAR" property="intype"/>
+        <result column="inCase" jdbcType="VARCHAR" property="incase"/>
+        <result column="inChannel" jdbcType="VARCHAR" property="inchannel"/>
+        <result column="diagnosis" jdbcType="VARCHAR" property="diagnosis"/>
+        <result column="isFect" jdbcType="VARCHAR" property="isfect"/>
+        <result column="notifyTime" jdbcType="VARCHAR" property="notifytime"/>
+        <result column="contactPhone" jdbcType="VARCHAR" property="contactphone"/>
+        <result column="disDesc" jdbcType="LONGVARCHAR" property="disdesc"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="signUrl" jdbcType="VARCHAR" property="signUrl"/>
+        <result column="signature" jdbcType="VARCHAR" property="signature"/>
+        <result column="birthday" jdbcType="TIMESTAMP" property="birthday"/>
+        <result column="sex" jdbcType="INTEGER" property="sex"/>
+        <result column="patient_name" jdbcType="INTEGER" property="patientName"/>
+        <result column="age" jdbcType="VARCHAR" property="age"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, out_patient_no, payType, inDep, inType, inCase, inChannel,
+        diagnosis, isFect, notifyTime, contactPhone, disDesc,create_time, update_time,signUrl,
+        signature,birthday,sex,patient_name,age
+    </sql>
+    <!--查询入院通知-->
+    <select id="selectSelective" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedNotice"
+            resultMap="NoticeResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hospitalized_notice
+        WHERE
+        1=1
+        <if test="outPatientNo != null and outPatientNo!=''">
+            AND out_patient_no = #{outPatientNo}
+        </if>
+        <if test="noticeId != null and noticeId != ''">
+            AND noticeId = #{noticeId}
+        </if>
+        <if test="orderByClause != null and orderByClause!=''">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <!--增加入院通知-->
+    <insert id="insertSelective" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedNotice">
+        insert into hospitalized_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="outPatientNo != null">
+                out_patient_no,
+            </if>
+            <if test="paytype != null">
+                payType,
+            </if>
+            <if test="indep != null">
+                inDep,
+            </if>
+            <if test="intype != null">
+                inType,
+            </if>
+            <if test="incase != null">
+                inCase,
+            </if>
+            <if test="inchannel != null">
+                inChannel,
+            </if>
+            <if test="diagnosis != null">
+                diagnosis,
+            </if>
+            <if test="isfect != null">
+                isFect,
+            </if>
+            <if test="notifytime != null">
+                notifyTime,
+            </if>
+            <if test="contactphone != null">
+                contactPhone,
+            </if>
+            <if test="disdesc != null">
+                disDesc,
+            </if>
+            <if test="signUrl != null">
+                signUrl,
+            </if>
+            <if test="signature != null">
+                signature,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="patientName != null">
+                patient_name,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="outPatientNo != null">
+                #{outPatientNo,jdbcType=VARCHAR},
+            </if>
+            <if test="paytype != null">
+                #{paytype,jdbcType=VARCHAR},
+            </if>
+            <if test="indep != null">
+                #{indep,jdbcType=VARCHAR},
+            </if>
+            <if test="intype != null">
+                #{intype,jdbcType=VARCHAR},
+            </if>
+            <if test="incase != null">
+                #{incase,jdbcType=VARCHAR},
+            </if>
+            <if test="inchannel != null">
+                #{inchannel,jdbcType=VARCHAR},
+            </if>
+            <if test="diagnosis != null">
+                #{diagnosis,jdbcType=VARCHAR},
+            </if>
+            <if test="isfect != null">
+                #{isfect,jdbcType=VARCHAR},
+            </if>
+            <if test="notifytime != null">
+                #{notifytime,jdbcType=VARCHAR},
+            </if>
+            <if test="contactphone != null">
+                #{contactphone,jdbcType=VARCHAR},
+            </if>
+            <if test="disdesc != null">
+                #{disdesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="signUrl != null">
+                #{signUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="signature != null">
+                #{signature,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                #{birthday},
+            </if>
+            <if test="sex != null">
+                #{sex},
+            </if>
+            <if test="patientName != null">
+                #{patientName},
+            </if>
+            <if test="age != null">
+                #{age},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <!--修改入院通知-->
+    <update id="updateSelective" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedNotice">
+        update hospitalized_notice
+        <set>
+            <if test="outPatientNo != null">
+                out_patient_no = #{outPatientNo,jdbcType=VARCHAR},
+            </if>
+            <if test="noticeId != null">
+                noticeId = #{noticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="paytype != null">
+                payType = #{paytype,jdbcType=VARCHAR},
+            </if>
+            <if test="hosno != null">
+                hosNo = #{hosno,jdbcType=VARCHAR},
+            </if>
+            <if test="indep != null">
+                inDep = #{indep,jdbcType=VARCHAR},
+            </if>
+            <if test="intype != null">
+                inType = #{intype,jdbcType=VARCHAR},
+            </if>
+            <if test="incase != null">
+                inCase = #{incase,jdbcType=VARCHAR},
+            </if>
+            <if test="inchannel != null">
+                inChannel = #{inchannel,jdbcType=VARCHAR},
+            </if>
+            <if test="diagnosis != null">
+                diagnosis = #{diagnosis,jdbcType=VARCHAR},
+            </if>
+            <if test="isfect != null">
+                isFect = #{isfect,jdbcType=VARCHAR},
+            </if>
+            <if test="notifytime != null">
+                notifyTime = #{notifytime,jdbcType=VARCHAR},
+            </if>
+            <if test="contactphone != null">
+                contactPhone = #{contactphone,jdbcType=VARCHAR},
+            </if>
+            <if test="disdesc != null">
+                disDesc = #{disdesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="signUrl != null">
+                signUrl = #{signUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="signature != null">
+                signature = #{signature,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="patientName != null">
+                patient_name = #{patientName},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

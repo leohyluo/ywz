@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.push.mapper.PushZdMapper">
+
+    <select id="getInfos" resultType="com.alpha.push.domain.PushinfoZd">
+        select card_no cardNo, patient_name pName, phone from his_register_yygh_zd
+    </select>
+
+</mapper>

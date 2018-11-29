@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alpha.self.diagnosis.mapper.DiagnosisSubAllergicHistoryMapper">
+	<resultMap id="BaseResultMap" type="com.alpha.server.rpc.diagnosis.pojo.DiagnosisSuballergicHistory">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="disease_code" jdbcType="VARCHAR" property="diseaseCode" />
+	    <result column="parent_disease_code" jdbcType="VARCHAR" property="parentDiseaseCode" />
+	    <result column="disease_name" jdbcType="VARCHAR" property="diseaseName" />
+	    <result column="popu_name" jdbcType="VARCHAR" property="popuName" />
+	    <result column="symbol" jdbcType="VARCHAR" property="symbol" />
+	    <result column="gender" jdbcType="INTEGER" property="gender" />
+	    <result column="min_age" jdbcType="DOUBLE" property="minAge" />
+	    <result column="max_age" jdbcType="DOUBLE" property="maxAge" />
+	    <result column="default_order" jdbcType="INTEGER" property="defaultOrder" />
+	    <result column="description" jdbcType="VARCHAR" property="description" />
+	    <result column="special_period" jdbcType="INTEGER" property="specialPeriod" />
+	    <result column="is_renal" jdbcType="BIT" property="isRenal" />
+	    <result column="is_liver" jdbcType="BIT" property="isLiver" />
+  	</resultMap>
+  
+  <select id="querySubAllergicHistory" resultType="DataRecord" parameterType="HashMap">
+  	select * from diagnosis_suballergic_history
+  	<where>
+		<if test="gender != null">
+					<![CDATA[
+						and (gender = #{gender} or gender is null)
+					]]>
+		</if>
+		<if test="specialPeriod != null">
+			and (special_period = #{specialPeriod} or special_period is null)
+		</if>
+		<if test="age != null">
+					<![CDATA[
+						and ((min_age is null and min_age is null)
+						or (min_age < #{age} and max_age > #{age}))
+					]]>
+		</if>
+		<if test="diseaseName != null">
+			and disease_name like concat(concat('%',#{diseaseName}),'%')
+		</if>
+	</where>
+  </select>
+</mapper>

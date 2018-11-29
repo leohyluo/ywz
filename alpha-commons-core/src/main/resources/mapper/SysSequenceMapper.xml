@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.commons.core.mapper.SysSequenceMapper">
+
+    <resultMap type="com.alpha.commons.core.pojo.SysSequence" id="SysSequence">
+        <id property="id" column="id"/>
+        <result property="sequenceKey" column="sequence_key"/>
+        <result property="currentValue" column="current_value"/>
+        <result property="increment" column="increment"/>
+    </resultMap>
+    <!-- 根据条件查询其它-->
+    <select id="getSequence" resultMap="SysSequence" parameterType="HashMap">
+			SELECT id,sequence_key,current_value,increment FROM sys_sequence where sequence_key=#{sequenceKey}
+    </select>
+
+    <!-- update Current Value -->
+    <update id="updateCurrentValue" parameterType="HashMap">
+			UPDATE  sys_sequence SET current_value=#{newCurrentValue} where sequence_key=#{sequenceKey} and current_value=#{oldCurrentValue}
+    </update>
+
+
+</mapper>

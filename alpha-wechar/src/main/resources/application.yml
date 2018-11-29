@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: alpha-wechar
+  profiles:
+    active: core
+server:
+  port: 19099
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:19081/eureka/

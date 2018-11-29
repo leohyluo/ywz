@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.his.mapper.PushZdMapper">
+
+    <select id="getInfos" resultType="com.alpha.his.pojo.dto.PushinfoZd">
+        select card_no cardNo, patient_name pName, phone from his_register_yygh_zd
+    </select>
+
+    <select id="pushNoticePhone" resultType="list">
+        select  phone from his_register_yygh_zd WHERE phone is NOT null
+    </select>
+</mapper>

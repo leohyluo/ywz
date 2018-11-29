@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.his.mapper.CountryMapper">
+    <select id="selectKeyword" resultType="com.alpha.his.pojo.dao.Country">
+        SELECT * from sys_nationality WHERE `name` like concat(concat('%',#{keyword}),'%') or symbol like concat(concat('%',#{keyword}),'%') order by times desc
+    </select>
+
+    <update id="updatebycode" >
+        UPDATE sys_nationality set times=times+1 WHERE code=#{code}
+    </update>
+
+    <select id="selectByCode" resultType="java.lang.String">
+        SELECT `name` from sys_nationality WHERE code=#{code}
+    </select>
+
+</mapper>

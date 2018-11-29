@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.SyDiagnosisAnswer">
+	<select id="query" parameterType="HashMap" resultType="DataRecord">
+		SELECT a.*,da.answer_image from sy_diagnosis_answer a LEFT JOIN diagnosis_answer da ON (
+			da.answer_code = a.answer_code
+		)
+		<where>
+			<if test = "answerCodeList != null">
+				and a.answer_code in 
+				<foreach item="item" index="index" collection="answerCodeList" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test = "wordsProp != null">
+				and a.words_prop = #{wordsProp}
+			</if>
+			and IFNULL(a.operate_type,'') != 'D'
+		</where>
+	</select>
+</mapper>

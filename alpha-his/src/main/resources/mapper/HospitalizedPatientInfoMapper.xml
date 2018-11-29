@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.his.dao.impl.HospitalizedPatientInfoDaoImpl">
+
+    <!--根据住院编号查询住院记录-->
+    <select id="queryByHospitalCodeAndHosNo" resultType="DataRecord" parameterType="HashMap">
+        select * from hospitalized_patient_info_new where hospital_code = #{hospitalCode} and hosNo = #{hosNo}
+    </select>
+    <resultMap id="PatientInfoResultMap" type="com.alpha.server.rpc.his.pojo.HospitalizedPatientInfoNew">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="patient_name" jdbcType="VARCHAR" property="patientName"/>
+        <result column="sex" jdbcType="BIT" property="sex"/>
+        <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+        <result column="nationality" jdbcType="INTEGER" property="nationality"/>
+        <result column="nation" jdbcType="INTEGER" property="nation"/>
+        <result column="hospital_code" jdbcType="VARCHAR" property="hospitalCode"/>
+        <result column="out_patient_no" jdbcType="VARCHAR" property="outPatientNo"/>
+        <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone"/>
+        <result column="contact_name" jdbcType="VARCHAR" property="contactName"/>
+        <result column="contact_addr" jdbcType="VARCHAR" property="contactAddr"/>
+        <result column="contact_idcard" jdbcType="VARCHAR" property="contactIdcard"/>
+        <result column="relationship" jdbcType="INTEGER" property="relationship"/>
+        <result column="insurance_no" jdbcType="VARCHAR" property="insuranceNo"/>
+        <result column="insurance_type" jdbcType="INTEGER" property="insuranceType"/>
+        <result column="patient_certiType" jdbcType="INTEGER" property="patientCertitype"/>
+        <result column="native_addr" jdbcType="VARCHAR" property="nativeAddr"/>
+        <result column="patient_certiNo" jdbcType="VARCHAR" property="patientCertino"/>
+        <result column="school" jdbcType="VARCHAR" property="school"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="homeplace" jdbcType="VARCHAR" property="homeplace"/>
+        <result column="card_no" jdbcType="VARCHAR" property="cardNo"/>
+        <result column="hosNo" jdbcType="VARCHAR" property="hosno"/>
+        <result column="insurance" jdbcType="VARCHAR" property="insurance"/>
+        <result column="mailing_address" jdbcType="VARCHAR" property="mailingAddress"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="registered_permanent" jdbcType="VARCHAR" property="registeredPermanent"/>
+        <result column="bed_no" jdbcType="VARCHAR" property="bedNo"/>
+        <result column="pat_adm_condition" jdbcType="VARCHAR" property="patAdmCondition"/>
+        <result column="admitted_by" jdbcType="VARCHAR" property="admittedBy"/>
+        <result column="occupation" jdbcType="VARCHAR" property="occupation"/>
+        <result column="consulting_doctor" jdbcType="VARCHAR" property="consultingDoctor"/>
+        <result column="discharge_disposition" jdbcType="VARCHAR" property="dischargeDisposition"/>
+        <result column="ward_discharge_from" jdbcType="VARCHAR" property="wardDischargeFrom"/>
+        <result column="dept_discharge_from" jdbcType="VARCHAR" property="deptDischargeFrom"/>
+        <result column="discharge_date_time" jdbcType="TIMESTAMP" property="dischargeDateTime"/>
+        <result column="admission_data_time" jdbcType="TIMESTAMP" property="admissionDataTime"/>
+        <result column="nursing_grade" jdbcType="INTEGER" property="nursingGrade"/>
+        <result column="visit_times" jdbcType="INTEGER" property="visitTimes"/>
+        <result column="diagnosis" jdbcType="VARCHAR" property="diagnosis"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="inp_no" jdbcType="VARCHAR" property="inpNo"/>
+        <result column="patient_id" jdbcType="VARCHAR" property="patientId"/>
+        <result column="service_agency" jdbcType="VARCHAR" property="serviceAgency"/>
+        <result column="native_place" jdbcType="VARCHAR" property="nativePlace"/>
+        <result column="marital_status" jdbcType="INTEGER" property="maritalStatus"/>
+        <result column="xzz" jdbcType="VARCHAR" property="xzz"/>
+        <result column="company" jdbcType="VARCHAR" property="company"/>
+        <result column="signUrl" jdbcType="VARCHAR" property="signUrl"/>
+        <result column="ishospitalized" jdbcType="INTEGER" property="ishospitalized"/>
+        <result column="pay_type" jdbcType="VARCHAR" property="payType"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, patient_name, sex, birthday, nationality, nation, hospital_code, out_patient_no,
+        contact_phone, contact_name, contact_addr, contact_idcard, relationship, insurance_no,
+        insurance_type, patient_certiType, native_addr, patient_certiNo, school, address,
+        homeplace, card_no, hosNo, insurance, mailing_address, create_time, update_time,
+        registered_permanent, bed_no, pat_adm_condition, admitted_by, occupation, consulting_doctor,
+        discharge_disposition, ward_discharge_from, dept_discharge_from, discharge_date_time,
+        admission_data_time, nursing_grade, visit_times, diagnosis, status, inp_no, patient_id,
+        service_agency, native_place, marital_status, xzz, company,signUrl,ishospitalized,pay_type
+    </sql>
+    <select id="selectSelective" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedPatientInfoNew"
+            resultMap="PatientInfoResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hospitalized_patient_info_new
+        WHERE
+        1=1
+        <if test="outPatientNo != null and outPatientNo!=''">
+            AND out_patient_no = #{outPatientNo}
+        </if>
+        <if test="noticeId != null and noticeId != ''">
+            AND noticeId = #{noticeId}
+        </if>
+        <if test="orderByClause != null and orderByClause!=''">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <!-- 增加入院基本信息-->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedPatientInfoNew">
+        insert into hospitalized_patient_info_new
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="patientName != null">
+                patient_name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="nationality != null">
+                nationality,
+            </if>
+            <if test="nation != null">
+                nation,
+            </if>
+            <if test="hospitalCode != null">
+                hospital_code,
+            </if>
+            <if test="outPatientNo != null">
+                out_patient_no,
+            </if>
+            <if test="contactPhone != null">
+                contact_phone,
+            </if>
+            <if test="contactName != null">
+                contact_name,
+            </if>
+            <if test="contactAddr != null">
+                contact_addr,
+            </if>
+            <if test="contactIdcard != null">
+                contact_idcard,
+            </if>
+            <if test="relationship != null">
+                relationship,
+            </if>
+            <if test="insuranceNo != null">
+                insurance_no,
+            </if>
+            <if test="insuranceType != null">
+                insurance_type,
+            </if>
+            <if test="patientCertitype != null">
+                patient_certiType,
+            </if>
+            <if test="nativeAddr != null">
+                native_addr,
+            </if>
+            <if test="patientCertino != null">
+                patient_certiNo,
+            </if>
+            <if test="school != null">
+                school,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="homeplace != null">
+                homeplace,
+            </if>
+            <if test="cardNo != null">
+                card_no,
+            </if>
+            <if test="hosno != null">
+                hosNo,
+            </if>
+            <if test="insurance != null">
+                insurance,
+            </if>
+            <if test="mailingAddress != null">
+                mailing_address,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="registeredPermanent != null">
+                registered_permanent,
+            </if>
+            <if test="bedNo != null">
+                bed_no,
+            </if>
+            <if test="patAdmCondition != null">
+                pat_adm_condition,
+            </if>
+            <if test="admittedBy != null">
+                admitted_by,
+            </if>
+            <if test="occupation != null">
+                occupation,
+            </if>
+            <if test="consultingDoctor != null">
+                consulting_doctor,
+            </if>
+            <if test="dischargeDisposition != null">
+                discharge_disposition,
+            </if>
+            <if test="wardDischargeFrom != null">
+                ward_discharge_from,
+            </if>
+            <if test="deptDischargeFrom != null">
+                dept_discharge_from,
+            </if>
+            <if test="dischargeDateTime != null">
+                discharge_date_time,
+            </if>
+            <if test="admissionDataTime != null">
+                admission_data_time,
+            </if>
+            <if test="nursingGrade != null">
+                nursing_grade,
+            </if>
+            <if test="visitTimes != null">
+                visit_times,
+            </if>
+            <if test="diagnosis != null">
+                diagnosis,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="inpNo != null">
+                inp_no,
+            </if>
+            <if test="patientId != null">
+                patient_id,
+            </if>
+            <if test="serviceAgency != null">
+                service_agency,
+            </if>
+            <if test="nativePlace != null">
+                native_place,
+            </if>
+            <if test="maritalStatus != null">
+                marital_status,
+            </if>
+            <if test="xzz != null">
+                xzz,
+            </if>
+            <if test="company != null">
+                company,
+            </if>
+            <if test="signUrl != null">
+                signUrl,
+            </if>
+            <if test="ishospitalized != null">
+                ishospitalized,
+            </if>
+            <if test="payType != null">
+                pay_type,
+            </if>
+            <if test="noticeId != null">
+                noticeId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="patientName != null">
+                #{patientName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=BIT},
+            </if>
+            <if test="birthday != null">
+                #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="nationality != null">
+                #{nationality,jdbcType=INTEGER},
+            </if>
+            <if test="nation != null">
+                #{nation,jdbcType=INTEGER},
+            </if>
+            <if test="hospitalCode != null">
+                #{hospitalCode,jdbcType=VARCHAR},
+            </if>
+            <if test="outPatientNo != null">
+                #{outPatientNo,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="contactName != null">
+                #{contactName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactAddr != null">
+                #{contactAddr,jdbcType=VARCHAR},
+            </if>
+            <if test="contactIdcard != null">
+                #{contactIdcard,jdbcType=VARCHAR},
+            </if>
+            <if test="relationship != null">
+                #{relationship,jdbcType=INTEGER},
+            </if>
+            <if test="insuranceNo != null">
+                #{insuranceNo,jdbcType=VARCHAR},
+            </if>
+            <if test="insuranceType != null">
+                #{insuranceType,jdbcType=INTEGER},
+            </if>
+            <if test="patientCertitype != null">
+                #{patientCertitype,jdbcType=INTEGER},
+            </if>
+            <if test="nativeAddr != null">
+                #{nativeAddr,jdbcType=VARCHAR},
+            </if>
+            <if test="patientCertino != null">
+                #{patientCertino,jdbcType=VARCHAR},
+            </if>
+            <if test="school != null">
+                #{school,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="homeplace != null">
+                #{homeplace,jdbcType=VARCHAR},
+            </if>
+            <if test="cardNo != null">
+                #{cardNo,jdbcType=VARCHAR},
+            </if>
+            <if test="hosno != null">
+                #{hosno,jdbcType=VARCHAR},
+            </if>
+            <if test="insurance != null">
+                #{insurance,jdbcType=VARCHAR},
+            </if>
+            <if test="mailingAddress != null">
+                #{mailingAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="registeredPermanent != null">
+                #{registeredPermanent,jdbcType=VARCHAR},
+            </if>
+            <if test="bedNo != null">
+                #{bedNo,jdbcType=VARCHAR},
+            </if>
+            <if test="patAdmCondition != null">
+                #{patAdmCondition,jdbcType=VARCHAR},
+            </if>
+            <if test="admittedBy != null">
+                #{admittedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="occupation != null">
+                #{occupation,jdbcType=VARCHAR},
+            </if>
+            <if test="consultingDoctor != null">
+                #{consultingDoctor,jdbcType=VARCHAR},
+            </if>
+            <if test="dischargeDisposition != null">
+                #{dischargeDisposition,jdbcType=VARCHAR},
+            </if>
+            <if test="wardDischargeFrom != null">
+                #{wardDischargeFrom,jdbcType=VARCHAR},
+            </if>
+            <if test="deptDischargeFrom != null">
+                #{deptDischargeFrom,jdbcType=VARCHAR},
+            </if>
+            <if test="dischargeDateTime != null">
+                #{dischargeDateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="admissionDataTime != null">
+                #{admissionDataTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="nursingGrade != null">
+                #{nursingGrade,jdbcType=INTEGER},
+            </if>
+            <if test="visitTimes != null">
+                #{visitTimes,jdbcType=INTEGER},
+            </if>
+            <if test="diagnosis != null">
+                #{diagnosis,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="inpNo != null">
+                #{inpNo,jdbcType=VARCHAR},
+            </if>
+            <if test="patientId != null">
+                #{patientId,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceAgency != null">
+                #{serviceAgency,jdbcType=VARCHAR},
+            </if>
+            <if test="nativePlace != null">
+                #{nativePlace,jdbcType=VARCHAR},
+            </if>
+            <if test="maritalStatus != null">
+                #{maritalStatus,jdbcType=INTEGER},
+            </if>
+            <if test="xzz != null">
+                #{xzz,jdbcType=VARCHAR},
+            </if>
+            <if test="company != null">
+                #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="signUrl != null">
+                #{signUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="ishospitalized != null">
+                #{ishospitalized,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null">
+                #{payType,jdbcType=VARCHAR},
+            </if>
+            <if test="noticeId != null">
+                #{noticeId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--修改入院基本信息-->
+    <update id="updateSelective" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedPatientInfoNew">
+        update hospitalized_patient_info_new
+        <set>
+            <if test="patientName != null">
+                patient_name = #{patientName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=BIT},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="nationality != null">
+                nationality = #{nationality,jdbcType=INTEGER},
+            </if>
+            <if test="nation != null">
+                nation = #{nation,jdbcType=INTEGER},
+            </if>
+            <if test="hospitalCode != null">
+                hospital_code = #{hospitalCode,jdbcType=VARCHAR},
+            </if>
+            <if test="outPatientNo != null">
+                out_patient_no = #{outPatientNo,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                contact_phone = #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="contactName != null">
+                contact_name = #{contactName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactAddr != null">
+                contact_addr = #{contactAddr,jdbcType=VARCHAR},
+            </if>
+            <if test="contactIdcard != null">
+                contact_idcard = #{contactIdcard,jdbcType=VARCHAR},
+            </if>
+            <if test="relationship != null">
+                relationship = #{relationship,jdbcType=INTEGER},
+            </if>
+            <if test="insuranceNo != null">
+                insurance_no = #{insuranceNo,jdbcType=VARCHAR},
+            </if>
+            <if test="insuranceType != null">
+                insurance_type = #{insuranceType,jdbcType=INTEGER},
+            </if>
+            <if test="patientCertitype != null">
+                patient_certiType = #{patientCertitype,jdbcType=INTEGER},
+            </if>
+            <if test="nativeAddr != null">
+                native_addr = #{nativeAddr,jdbcType=VARCHAR},
+            </if>
+            <if test="patientCertino != null">
+                patient_certiNo = #{patientCertino,jdbcType=VARCHAR},
+            </if>
+            <if test="school != null">
+                school = #{school,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="homeplace != null">
+                homeplace = #{homeplace,jdbcType=VARCHAR},
+            </if>
+            <if test="cardNo != null">
+                card_no = #{cardNo,jdbcType=VARCHAR},
+            </if>
+            <if test="hosno != null">
+                hosNo = #{hosno,jdbcType=VARCHAR},
+            </if>
+            <if test="insurance != null">
+                insurance = #{insurance,jdbcType=VARCHAR},
+            </if>
+            <if test="mailingAddress != null">
+                mailing_address = #{mailingAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="registeredPermanent != null">
+                registered_permanent = #{registeredPermanent,jdbcType=VARCHAR},
+            </if>
+            <if test="bedNo != null">
+                bed_no = #{bedNo,jdbcType=VARCHAR},
+            </if>
+            <if test="patAdmCondition != null">
+                pat_adm_condition = #{patAdmCondition,jdbcType=VARCHAR},
+            </if>
+            <if test="admittedBy != null">
+                admitted_by = #{admittedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="occupation != null">
+                occupation = #{occupation,jdbcType=VARCHAR},
+            </if>
+            <if test="consultingDoctor != null">
+                consulting_doctor = #{consultingDoctor,jdbcType=VARCHAR},
+            </if>
+            <if test="dischargeDisposition != null">
+                discharge_disposition = #{dischargeDisposition,jdbcType=VARCHAR},
+            </if>
+            <if test="wardDischargeFrom != null">
+                ward_discharge_from = #{wardDischargeFrom,jdbcType=VARCHAR},
+            </if>
+            <if test="deptDischargeFrom != null">
+                dept_discharge_from = #{deptDischargeFrom,jdbcType=VARCHAR},
+            </if>
+            <if test="dischargeDateTime != null">
+                discharge_date_time = #{dischargeDateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="admissionDataTime != null">
+                admission_data_time = #{admissionDataTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="nursingGrade != null">
+                nursing_grade = #{nursingGrade,jdbcType=INTEGER},
+            </if>
+            <if test="visitTimes != null">
+                visit_times = #{visitTimes,jdbcType=INTEGER},
+            </if>
+            <if test="diagnosis != null">
+                diagnosis = #{diagnosis,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="inpNo != null">
+                inp_no = #{inpNo,jdbcType=VARCHAR},
+            </if>
+            <if test="patientId != null">
+                patient_id = #{patientId,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceAgency != null">
+                service_agency = #{serviceAgency,jdbcType=VARCHAR},
+            </if>
+            <if test="nativePlace != null">
+                native_place = #{nativePlace,jdbcType=VARCHAR},
+            </if>
+            <if test="maritalStatus != null">
+                marital_status = #{maritalStatus,jdbcType=INTEGER},
+            </if>
+            <if test="xzz != null">
+                xzz = #{xzz,jdbcType=VARCHAR},
+            </if>
+            <if test="company != null">
+                company = #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="signUrl != null">
+                signUrl = #{signUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="ishospitalized != null">
+                ishospitalized = #{ishospitalized,jdbcType=VARCHAR},
+            </if>
+            <if test="payType != null">
+                pay_type = #{payType,jdbcType=VARCHAR}
+            </if>
+            <if test="noticeId != null">
+                noticeId = #{noticeId,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

@@ -1,0 +1,914 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alpha.his.dao.impl.HospitalizedNewIllChildDaoImpl" >
+
+    <!--根据住院编号查询住院记录-->
+    <select id="queryByHospitalCodeAndHosNo" resultType="DataRecord" parameterType="HashMap">
+        select * from hospitalized_new_ill_child where hospital_code = #{hospitalCode} and hosNo = #{hosNo}
+    </select>
+
+    <resultMap id="NewIllChildResultMap" type="com.alpha.server.rpc.his.pojo.HospitalizedNewIllChild">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="hospital_code" jdbcType="VARCHAR" property="hospitalCode" />
+        <result column="out_patient_no" jdbcType="VARCHAR" property="outPatientNo" />
+        <result column="mainSymp" jdbcType="VARCHAR" property="mainsymp" />
+        <result column="meconium" jdbcType="VARCHAR" property="meconium" />
+        <result column="ucdown" jdbcType="VARCHAR" property="ucdown" />
+        <result column="stump" jdbcType="VARCHAR" property="stump" />
+        <result column="navel" jdbcType="VARCHAR" property="navel" />
+        <result column="secretion" jdbcType="VARCHAR" property="secretion" />
+        <result column="nurse" jdbcType="VARCHAR" property="nurse" />
+        <result column="cayN" jdbcType="VARCHAR" property="cayn" />
+        <result column="temperature" jdbcType="VARCHAR" property="temperature" />
+        <result column="isJaundice" jdbcType="VARCHAR" property="isjaundice" />
+        <result column="isCyanose" jdbcType="VARCHAR" property="iscyanose" />
+        <result column="isTwitch" jdbcType="VARCHAR" property="istwitch" />
+        <result column="isDyspnea" jdbcType="VARCHAR" property="isdyspnea" />
+        <result column="stool" jdbcType="VARCHAR" property="stool" />
+        <result column="tp" jdbcType="VARCHAR" property="tp" />
+        <result column="bmilkMonth" jdbcType="VARCHAR" property="bmilkmonth" />
+        <result column="foodTime" jdbcType="VARCHAR" property="foodtime" />
+        <result column="cayO" jdbcType="VARCHAR" property="cayo" />
+        <result column="skinColor" jdbcType="VARCHAR" property="skincolor" />
+        <result column="toe" jdbcType="VARCHAR" property="toe" />
+        <result column="afi" jdbcType="VARCHAR" property="afi" />
+        <result column="oneTime" jdbcType="VARCHAR" property="onetime" />
+        <result column="fiveTime" jdbcType="VARCHAR" property="fivetime" />
+        <result column="isAsphyxia" jdbcType="VARCHAR" property="isasphyxia" />
+        <result column="timeAsphyxia" jdbcType="VARCHAR" property="timeasphyxia" />
+        <result column="resultRm" jdbcType="VARCHAR" property="resultrm" />
+        <result column="jaundiceTime" jdbcType="VARCHAR" property="jaundicetime" />
+        <result column="jaundiceUpTime" jdbcType="VARCHAR" property="jaundiceuptime" />
+        <result column="jaundiceDTime" jdbcType="VARCHAR" property="jaundicedtime" />
+        <result column="djaundiceDgree" jdbcType="VARCHAR" property="djaundicedgree" />
+        <result column="omTime" jdbcType="VARCHAR" property="omtime" />
+        <result column="omType" jdbcType="VARCHAR" property="omtype" />
+        <result column="nc" jdbcType="VARCHAR" property="nc" />
+        <result column="isBCG" jdbcType="VARCHAR" property="isbcg" />
+        <result column="isHB" jdbcType="VARCHAR" property="ishb" />
+        <result column="isHBHEI" jdbcType="VARCHAR" property="ishbhei" />
+        <result column="fatherHeal" jdbcType="VARCHAR" property="fatherheal" />
+        <result column="fatherName" jdbcType="VARCHAR" property="fathername" />
+        <result column="fatherIdNo" jdbcType="VARCHAR" property="fatheridno" />
+        <result column="fatherBType" jdbcType="VARCHAR" property="fatherbtype" />
+        <result column="momName" jdbcType="VARCHAR" property="momname" />
+        <result column="momAge" jdbcType="VARCHAR" property="momage" />
+        <result column="momHeal" jdbcType="VARCHAR" property="momheal" />
+        <result column="momIdNo" jdbcType="VARCHAR" property="momidno" />
+        <result column="momBType" jdbcType="VARCHAR" property="mombtype" />
+        <result column="isHealth" jdbcType="VARCHAR" property="ishealth" />
+        <result column="ch" jdbcType="VARCHAR" property="ch" />
+        <result column="cha" jdbcType="VARCHAR" property="cha" />
+        <result column="wjt" jdbcType="VARCHAR" property="wjt" />
+        <result column="wjc" jdbcType="VARCHAR" property="wjc" />
+        <result column="rrweek" jdbcType="VARCHAR" property="rrweek" />
+        <result column="dcSize" jdbcType="VARCHAR" property="dcsize" />
+        <result column="rrAdd" jdbcType="VARCHAR" property="rradd" />
+        <result column="babyType" jdbcType="VARCHAR" property="babytype" />
+        <result column="rrType" jdbcType="VARCHAR" property="rrtype" />
+        <result column="allTime" jdbcType="VARCHAR" property="alltime" />
+        <result column="secondTime" jdbcType="VARCHAR" property="secondtime" />
+        <result column="afType" jdbcType="VARCHAR" property="aftype" />
+        <result column="isAfb" jdbcType="VARCHAR" property="isafb" />
+        <result column="isPla" jdbcType="VARCHAR" property="ispla" />
+        <result column="isuca" jdbcType="VARCHAR" property="isuca" />
+        <result column="rrTimes" jdbcType="VARCHAR" property="rrtimes" />
+        <result column="zrlTimes" jdbcType="VARCHAR" property="zrltimes" />
+        <result column="rglTimes" jdbcType="VARCHAR" property="rgltimes" />
+        <result column="wst" jdbcType="VARCHAR" property="wst" />
+        <result column="wsc" jdbcType="VARCHAR" property="wsc" />
+        <result column="hchild" jdbcType="VARCHAR" property="hchild" />
+        <result column="childAges" jdbcType="VARCHAR" property="childages" />
+        <result column="childHeal" jdbcType="VARCHAR" property="childheal" />
+        <result column="infectiousDis" jdbcType="VARCHAR" property="infectiousdis" />
+        <result column="dTime" jdbcType="VARCHAR" property="dtime" />
+        <result column="dAuthor" jdbcType="VARCHAR" property="dauthor" />
+        <result column="drShip" jdbcType="VARCHAR" property="drship" />
+        <result column="hosNo" jdbcType="VARCHAR" property="hosno" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="apgar" jdbcType="VARCHAR" property="apgar" />
+        <result column="father_age" jdbcType="VARCHAR" property="fatherAge" />
+        <result column="predelivery" jdbcType="VARCHAR" property="predelivery" />
+        <result column="cesarean_section" jdbcType="VARCHAR" property="cesareanSection" />
+        <result column="premature_birth" jdbcType="VARCHAR" property="prematureBirth" />
+        <result column="bed_number" jdbcType="VARCHAR" property="bedNumber" />
+        <result column="birth_time" jdbcType="TIMESTAMP" property="birthTime" />
+        <result column="contactPhone" jdbcType="VARCHAR" property="contactPhone" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, hospital_code, out_patient_no, mainSymp, meconium, ucdown, stump, navel, secretion,
+        nurse, cayN, temperature, isJaundice, isCyanose, isTwitch, isDyspnea, stool, tp,
+        bmilkMonth, foodTime, cayO, skinColor, toe, afi, oneTime, fiveTime, isAsphyxia, timeAsphyxia,
+        resultRm, jaundiceTime, jaundiceUpTime, jaundiceDTime, djaundiceDgree, omTime, omType,
+        nc, isBCG, isHB, isHBHEI, fatherHeal, fatherName, fatherIdNo, fatherBType, momName,
+        momAge, momHeal, momIdNo, momBType, isHealth, ch, cha, wjt, wjc, rrweek, dcSize,
+        rrAdd, babyType, rrType, allTime, secondTime, afType, isAfb, isPla, isuca, rrTimes,
+        zrlTimes, rglTimes, wst, wsc, hchild, childAges, childHeal, infectiousDis, dTime,
+        dAuthor, drShip, hosNo, create_time, update_time,apgar,father_age,predelivery,cesarean_section,
+        premature_birth,bed_number,birth_time,contactPhone
+    </sql>
+    <select id="selectSelective" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedNewIllChild" resultMap="NewIllChildResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from hospitalized_new_ill_child
+        WHERE
+        1=1
+        <if test="outPatientNo != null and outPatientNo!=''">
+            AND out_patient_no = #{outPatientNo}
+        </if>
+        <if test="noticeId != null and noticeId!=''">
+            AND noticeId = #{noticeId}
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <insert id="insertSelective" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedNewIllChild">
+        insert into hospitalized_new_ill_child
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hospitalCode != null">
+                hospital_code,
+            </if>
+            <if test="outPatientNo != null">
+                out_patient_no,
+            </if>
+            <if test="mainsymp != null">
+                mainSymp,
+            </if>
+            <if test="meconium != null">
+                meconium,
+            </if>
+            <if test="ucdown != null">
+                ucdown,
+            </if>
+            <if test="stump != null">
+                stump,
+            </if>
+            <if test="navel != null">
+                navel,
+            </if>
+            <if test="secretion != null">
+                secretion,
+            </if>
+            <if test="nurse != null">
+                nurse,
+            </if>
+            <if test="cayn != null">
+                cayN,
+            </if>
+            <if test="temperature != null">
+                temperature,
+            </if>
+            <if test="isjaundice != null">
+                isJaundice,
+            </if>
+            <if test="iscyanose != null">
+                isCyanose,
+            </if>
+            <if test="istwitch != null">
+                isTwitch,
+            </if>
+            <if test="isdyspnea != null">
+                isDyspnea,
+            </if>
+            <if test="stool != null">
+                stool,
+            </if>
+            <if test="tp != null">
+                tp,
+            </if>
+            <if test="bmilkmonth != null">
+                bmilkMonth,
+            </if>
+            <if test="foodtime != null">
+                foodTime,
+            </if>
+            <if test="cayo != null">
+                cayO,
+            </if>
+            <if test="skincolor != null">
+                skinColor,
+            </if>
+            <if test="toe != null">
+                toe,
+            </if>
+            <if test="afi != null">
+                afi,
+            </if>
+            <if test="onetime != null">
+                oneTime,
+            </if>
+            <if test="fivetime != null">
+                fiveTime,
+            </if>
+            <if test="isasphyxia != null">
+                isAsphyxia,
+            </if>
+            <if test="timeasphyxia != null">
+                timeAsphyxia,
+            </if>
+            <if test="resultrm != null">
+                resultRm,
+            </if>
+            <if test="jaundicetime != null">
+                jaundiceTime,
+            </if>
+            <if test="jaundiceuptime != null">
+                jaundiceUpTime,
+            </if>
+            <if test="jaundicedtime != null">
+                jaundiceDTime,
+            </if>
+            <if test="djaundicedgree != null">
+                djaundiceDgree,
+            </if>
+            <if test="omtime != null">
+                omTime,
+            </if>
+            <if test="omtype != null">
+                omType,
+            </if>
+            <if test="nc != null">
+                nc,
+            </if>
+            <if test="isbcg != null">
+                isBCG,
+            </if>
+            <if test="ishb != null">
+                isHB,
+            </if>
+            <if test="ishbhei != null">
+                isHBHEI,
+            </if>
+            <if test="fatherheal != null">
+                fatherHeal,
+            </if>
+            <if test="fathername != null">
+                fatherName,
+            </if>
+            <if test="fatheridno != null">
+                fatherIdNo,
+            </if>
+            <if test="fatherbtype != null">
+                fatherBType,
+            </if>
+            <if test="momname != null">
+                momName,
+            </if>
+            <if test="momage != null">
+                momAge,
+            </if>
+            <if test="momheal != null">
+                momHeal,
+            </if>
+            <if test="momidno != null">
+                momIdNo,
+            </if>
+            <if test="mombtype != null">
+                momBType,
+            </if>
+            <if test="ishealth != null">
+                isHealth,
+            </if>
+            <if test="ch != null">
+                ch,
+            </if>
+            <if test="cha != null">
+                cha,
+            </if>
+            <if test="wjt != null">
+                wjt,
+            </if>
+            <if test="wjc != null">
+                wjc,
+            </if>
+            <if test="rrweek != null">
+                rrweek,
+            </if>
+            <if test="dcsize != null">
+                dcSize,
+            </if>
+            <if test="rradd != null">
+                rrAdd,
+            </if>
+            <if test="babytype != null">
+                babyType,
+            </if>
+            <if test="rrtype != null">
+                rrType,
+            </if>
+            <if test="alltime != null">
+                allTime,
+            </if>
+            <if test="secondtime != null">
+                secondTime,
+            </if>
+            <if test="aftype != null">
+                afType,
+            </if>
+            <if test="isafb != null">
+                isAfb,
+            </if>
+            <if test="ispla != null">
+                isPla,
+            </if>
+            <if test="isuca != null">
+                isuca,
+            </if>
+            <if test="rrtimes != null">
+                rrTimes,
+            </if>
+            <if test="zrltimes != null">
+                zrlTimes,
+            </if>
+            <if test="rgltimes != null">
+                rglTimes,
+            </if>
+            <if test="wst != null">
+                wst,
+            </if>
+            <if test="wsc != null">
+                wsc,
+            </if>
+            <if test="hchild != null">
+                hchild,
+            </if>
+            <if test="childages != null">
+                childAges,
+            </if>
+            <if test="childheal != null">
+                childHeal,
+            </if>
+            <if test="infectiousdis != null">
+                infectiousDis,
+            </if>
+            <if test="dtime != null">
+                dTime,
+            </if>
+            <if test="dauthor != null">
+                dAuthor,
+            </if>
+            <if test="drship != null">
+                drShip,
+            </if>
+            <if test="hosno != null">
+                hosNo,
+            </if>
+            <if test="apgar != null">
+                apgar,
+            </if>
+            <if test="fatherAge != null">
+                father_age,
+            </if>
+            <if test="predelivery != null">
+                predelivery,
+            </if>
+            <if test="cesareanSection != null">
+                cesarean_section,
+            </if>
+            <if test="prematureBirth != null">
+                premature_birth,
+            </if>
+            <if test="bedNumber != null">
+                bed_number,
+            </if>
+            <if test="birthTime != null">
+                birth_time,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="noticeId != null">
+                noticeId,
+            </if>
+            <if test="contactPhone != null">
+                contactPhone,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hospitalCode != null">
+                #{hospitalCode,jdbcType=VARCHAR},
+            </if>
+            <if test="outPatientNo != null">
+                #{outPatientNo,jdbcType=VARCHAR},
+            </if>
+            <if test="mainsymp != null">
+                #{mainsymp,jdbcType=VARCHAR},
+            </if>
+            <if test="meconium != null">
+                #{meconium,jdbcType=VARCHAR},
+            </if>
+            <if test="ucdown != null">
+                #{ucdown,jdbcType=VARCHAR},
+            </if>
+            <if test="stump != null">
+                #{stump,jdbcType=VARCHAR},
+            </if>
+            <if test="navel != null">
+                #{navel,jdbcType=VARCHAR},
+            </if>
+            <if test="secretion != null">
+                #{secretion,jdbcType=VARCHAR},
+            </if>
+            <if test="nurse != null">
+                #{nurse,jdbcType=VARCHAR},
+            </if>
+            <if test="cayn != null">
+                #{cayn,jdbcType=VARCHAR},
+            </if>
+            <if test="temperature != null">
+                #{temperature,jdbcType=VARCHAR},
+            </if>
+            <if test="isjaundice != null">
+                #{isjaundice,jdbcType=VARCHAR},
+            </if>
+            <if test="iscyanose != null">
+                #{iscyanose,jdbcType=VARCHAR},
+            </if>
+            <if test="istwitch != null">
+                #{istwitch,jdbcType=VARCHAR},
+            </if>
+            <if test="isdyspnea != null">
+                #{isdyspnea,jdbcType=VARCHAR},
+            </if>
+            <if test="stool != null">
+                #{stool,jdbcType=VARCHAR},
+            </if>
+            <if test="tp != null">
+                #{tp,jdbcType=VARCHAR},
+            </if>
+            <if test="bmilkmonth != null">
+                #{bmilkmonth,jdbcType=VARCHAR},
+            </if>
+            <if test="foodtime != null">
+                #{foodtime,jdbcType=VARCHAR},
+            </if>
+            <if test="cayo != null">
+                #{cayo,jdbcType=VARCHAR},
+            </if>
+            <if test="skincolor != null">
+                #{skincolor,jdbcType=VARCHAR},
+            </if>
+            <if test="toe != null">
+                #{toe,jdbcType=VARCHAR},
+            </if>
+            <if test="afi != null">
+                #{afi,jdbcType=VARCHAR},
+            </if>
+            <if test="onetime != null">
+                #{onetime,jdbcType=VARCHAR},
+            </if>
+            <if test="fivetime != null">
+                #{fivetime,jdbcType=VARCHAR},
+            </if>
+            <if test="isasphyxia != null">
+                #{isasphyxia,jdbcType=VARCHAR},
+            </if>
+            <if test="timeasphyxia != null">
+                #{timeasphyxia,jdbcType=VARCHAR},
+            </if>
+            <if test="resultrm != null">
+                #{resultrm,jdbcType=VARCHAR},
+            </if>
+            <if test="jaundicetime != null">
+                #{jaundicetime,jdbcType=VARCHAR},
+            </if>
+            <if test="jaundiceuptime != null">
+                #{jaundiceuptime,jdbcType=VARCHAR},
+            </if>
+            <if test="jaundicedtime != null">
+                #{jaundicedtime,jdbcType=VARCHAR},
+            </if>
+            <if test="djaundicedgree != null">
+                #{djaundicedgree,jdbcType=VARCHAR},
+            </if>
+            <if test="omtime != null">
+                #{omtime,jdbcType=VARCHAR},
+            </if>
+            <if test="omtype != null">
+                #{omtype,jdbcType=VARCHAR},
+            </if>
+            <if test="nc != null">
+                #{nc,jdbcType=VARCHAR},
+            </if>
+            <if test="isbcg != null">
+                #{isbcg,jdbcType=VARCHAR},
+            </if>
+            <if test="ishb != null">
+                #{ishb,jdbcType=VARCHAR},
+            </if>
+            <if test="ishbhei != null">
+                #{ishbhei,jdbcType=VARCHAR},
+            </if>
+            <if test="fatherheal != null">
+                #{fatherheal,jdbcType=VARCHAR},
+            </if>
+            <if test="fathername != null">
+                #{fathername,jdbcType=VARCHAR},
+            </if>
+            <if test="fatheridno != null">
+                #{fatheridno,jdbcType=VARCHAR},
+            </if>
+            <if test="fatherbtype != null">
+                #{fatherbtype,jdbcType=VARCHAR},
+            </if>
+            <if test="momname != null">
+                #{momname,jdbcType=VARCHAR},
+            </if>
+            <if test="momage != null">
+                #{momage,jdbcType=VARCHAR},
+            </if>
+            <if test="momheal != null">
+                #{momheal,jdbcType=VARCHAR},
+            </if>
+            <if test="momidno != null">
+                #{momidno,jdbcType=VARCHAR},
+            </if>
+            <if test="mombtype != null">
+                #{mombtype,jdbcType=VARCHAR},
+            </if>
+            <if test="ishealth != null">
+                #{ishealth,jdbcType=VARCHAR},
+            </if>
+            <if test="ch != null">
+                #{ch,jdbcType=VARCHAR},
+            </if>
+            <if test="cha != null">
+                #{cha,jdbcType=VARCHAR},
+            </if>
+            <if test="wjt != null">
+                #{wjt,jdbcType=VARCHAR},
+            </if>
+            <if test="wjc != null">
+                #{wjc,jdbcType=VARCHAR},
+            </if>
+            <if test="rrweek != null">
+                #{rrweek,jdbcType=VARCHAR},
+            </if>
+            <if test="dcsize != null">
+                #{dcsize,jdbcType=VARCHAR},
+            </if>
+            <if test="rradd != null">
+                #{rradd,jdbcType=VARCHAR},
+            </if>
+            <if test="babytype != null">
+                #{babytype,jdbcType=VARCHAR},
+            </if>
+            <if test="rrtype != null">
+                #{rrtype,jdbcType=VARCHAR},
+            </if>
+            <if test="alltime != null">
+                #{alltime,jdbcType=VARCHAR},
+            </if>
+            <if test="secondtime != null">
+                #{secondtime,jdbcType=VARCHAR},
+            </if>
+            <if test="aftype != null">
+                #{aftype,jdbcType=VARCHAR},
+            </if>
+            <if test="isafb != null">
+                #{isafb,jdbcType=VARCHAR},
+            </if>
+            <if test="ispla != null">
+                #{ispla,jdbcType=VARCHAR},
+            </if>
+            <if test="isuca != null">
+                #{isuca,jdbcType=VARCHAR},
+            </if>
+            <if test="rrtimes != null">
+                #{rrtimes,jdbcType=VARCHAR},
+            </if>
+            <if test="zrltimes != null">
+                #{zrltimes,jdbcType=VARCHAR},
+            </if>
+            <if test="rgltimes != null">
+                #{rgltimes,jdbcType=VARCHAR},
+            </if>
+            <if test="wst != null">
+                #{wst,jdbcType=VARCHAR},
+            </if>
+            <if test="wsc != null">
+                #{wsc,jdbcType=VARCHAR},
+            </if>
+            <if test="hchild != null">
+                #{hchild,jdbcType=VARCHAR},
+            </if>
+            <if test="childages != null">
+                #{childages,jdbcType=VARCHAR},
+            </if>
+            <if test="childheal != null">
+                #{childheal,jdbcType=VARCHAR},
+            </if>
+            <if test="infectiousdis != null">
+                #{infectiousdis,jdbcType=VARCHAR},
+            </if>
+            <if test="dtime != null">
+                #{dtime,jdbcType=VARCHAR},
+            </if>
+            <if test="dauthor != null">
+                #{dauthor,jdbcType=VARCHAR},
+            </if>
+            <if test="drship != null">
+                #{drship,jdbcType=VARCHAR},
+            </if>
+            <if test="hosno != null">
+                #{hosno,jdbcType=VARCHAR},
+            </if>
+            <if test="apgar != null">
+                #{apgar,jdbcType=VARCHAR},
+            </if>
+            <if test="fatherAge != null">
+                #{fatherAge,jdbcType=VARCHAR},
+            </if>
+            <if test="predelivery != null">
+                #{predelivery,jdbcType=VARCHAR},
+            </if>
+            <if test="cesareanSection != null">
+                #{cesareanSection,jdbcType=VARCHAR},
+            </if>
+            <if test="prematureBirth != null">
+                #{prematureBirth,jdbcType=VARCHAR},
+            </if>
+            <if test="bedNumber != null">
+                #{bedNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="birthTime != null">
+                #{birthTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="noticeId != null">
+                #{noticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                #{contactPhone,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateSelective" parameterType="com.alpha.server.rpc.his.pojo.HospitalizedNewIllChild">
+        update hospitalized_new_ill_child
+        <set>
+            <if test="hospitalCode != null">
+                hospital_code = #{hospitalCode,jdbcType=VARCHAR},
+            </if>
+            <if test="outPatientNo != null">
+                out_patient_no = #{outPatientNo,jdbcType=VARCHAR},
+            </if>
+            <if test="mainsymp != null">
+                mainSymp = #{mainsymp,jdbcType=VARCHAR},
+            </if>
+            <if test="meconium != null">
+                meconium = #{meconium,jdbcType=VARCHAR},
+            </if>
+            <if test="ucdown != null">
+                ucdown = #{ucdown,jdbcType=VARCHAR},
+            </if>
+            <if test="stump != null">
+                stump = #{stump,jdbcType=VARCHAR},
+            </if>
+            <if test="navel != null">
+                navel = #{navel,jdbcType=VARCHAR},
+            </if>
+            <if test="secretion != null">
+                secretion = #{secretion,jdbcType=VARCHAR},
+            </if>
+            <if test="nurse != null">
+                nurse = #{nurse,jdbcType=VARCHAR},
+            </if>
+            <if test="cayn != null">
+                cayN = #{cayn,jdbcType=VARCHAR},
+            </if>
+            <if test="temperature != null">
+                temperature = #{temperature,jdbcType=VARCHAR},
+            </if>
+            <if test="isjaundice != null">
+                isJaundice = #{isjaundice,jdbcType=VARCHAR},
+            </if>
+            <if test="iscyanose != null">
+                isCyanose = #{iscyanose,jdbcType=VARCHAR},
+            </if>
+            <if test="istwitch != null">
+                isTwitch = #{istwitch,jdbcType=VARCHAR},
+            </if>
+            <if test="isdyspnea != null">
+                isDyspnea = #{isdyspnea,jdbcType=VARCHAR},
+            </if>
+            <if test="stool != null">
+                stool = #{stool,jdbcType=VARCHAR},
+            </if>
+            <if test="tp != null">
+                tp = #{tp,jdbcType=VARCHAR},
+            </if>
+            <if test="bmilkmonth != null">
+                bmilkMonth = #{bmilkmonth,jdbcType=VARCHAR},
+            </if>
+            <if test="foodtime != null">
+                foodTime = #{foodtime,jdbcType=VARCHAR},
+            </if>
+            <if test="cayo != null">
+                cayO = #{cayo,jdbcType=VARCHAR},
+            </if>
+            <if test="skincolor != null">
+                skinColor = #{skincolor,jdbcType=VARCHAR},
+            </if>
+            <if test="toe != null">
+                toe = #{toe,jdbcType=VARCHAR},
+            </if>
+            <if test="afi != null">
+                afi = #{afi,jdbcType=VARCHAR},
+            </if>
+            <if test="onetime != null">
+                oneTime = #{onetime,jdbcType=VARCHAR},
+            </if>
+            <if test="fivetime != null">
+                fiveTime = #{fivetime,jdbcType=VARCHAR},
+            </if>
+            <if test="isasphyxia != null">
+                isAsphyxia = #{isasphyxia,jdbcType=VARCHAR},
+            </if>
+            <if test="timeasphyxia != null">
+                timeAsphyxia = #{timeasphyxia,jdbcType=VARCHAR},
+            </if>
+            <if test="resultrm != null">
+                resultRm = #{resultrm,jdbcType=VARCHAR},
+            </if>
+            <if test="jaundicetime != null">
+                jaundiceTime = #{jaundicetime,jdbcType=VARCHAR},
+            </if>
+            <if test="jaundiceuptime != null">
+                jaundiceUpTime = #{jaundiceuptime,jdbcType=VARCHAR},
+            </if>
+            <if test="jaundicedtime != null">
+                jaundiceDTime = #{jaundicedtime,jdbcType=VARCHAR},
+            </if>
+            <if test="djaundicedgree != null">
+                djaundiceDgree = #{djaundicedgree,jdbcType=VARCHAR},
+            </if>
+            <if test="omtime != null">
+                omTime = #{omtime,jdbcType=VARCHAR},
+            </if>
+            <if test="omtype != null">
+                omType = #{omtype,jdbcType=VARCHAR},
+            </if>
+            <if test="nc != null">
+                nc = #{nc,jdbcType=VARCHAR},
+            </if>
+            <if test="isbcg != null">
+                isBCG = #{isbcg,jdbcType=VARCHAR},
+            </if>
+            <if test="ishb != null">
+                isHB = #{ishb,jdbcType=VARCHAR},
+            </if>
+            <if test="ishbhei != null">
+                isHBHEI = #{ishbhei,jdbcType=VARCHAR},
+            </if>
+            <if test="fatherheal != null">
+                fatherHeal = #{fatherheal,jdbcType=VARCHAR},
+            </if>
+            <if test="fathername != null">
+                fatherName = #{fathername,jdbcType=VARCHAR},
+            </if>
+            <if test="fatheridno != null">
+                fatherIdNo = #{fatheridno,jdbcType=VARCHAR},
+            </if>
+            <if test="fatherbtype != null">
+                fatherBType = #{fatherbtype,jdbcType=VARCHAR},
+            </if>
+            <if test="momname != null">
+                momName = #{momname,jdbcType=VARCHAR},
+            </if>
+            <if test="momage != null">
+                momAge = #{momage,jdbcType=VARCHAR},
+            </if>
+            <if test="momheal != null">
+                momHeal = #{momheal,jdbcType=VARCHAR},
+            </if>
+            <if test="momidno != null">
+                momIdNo = #{momidno,jdbcType=VARCHAR},
+            </if>
+            <if test="mombtype != null">
+                momBType = #{mombtype,jdbcType=VARCHAR},
+            </if>
+            <if test="ishealth != null">
+                isHealth = #{ishealth,jdbcType=VARCHAR},
+            </if>
+            <if test="ch != null">
+                ch = #{ch,jdbcType=VARCHAR},
+            </if>
+            <if test="cha != null">
+                cha = #{cha,jdbcType=VARCHAR},
+            </if>
+            <if test="wjt != null">
+                wjt = #{wjt,jdbcType=VARCHAR},
+            </if>
+            <if test="wjc != null">
+                wjc = #{wjc,jdbcType=VARCHAR},
+            </if>
+            <if test="rrweek != null">
+                rrweek = #{rrweek,jdbcType=VARCHAR},
+            </if>
+            <if test="dcsize != null">
+                dcSize = #{dcsize,jdbcType=VARCHAR},
+            </if>
+            <if test="rradd != null">
+                rrAdd = #{rradd,jdbcType=VARCHAR},
+            </if>
+            <if test="babytype != null">
+                babyType = #{babytype,jdbcType=VARCHAR},
+            </if>
+            <if test="rrtype != null">
+                rrType = #{rrtype,jdbcType=VARCHAR},
+            </if>
+            <if test="alltime != null">
+                allTime = #{alltime,jdbcType=VARCHAR},
+            </if>
+            <if test="secondtime != null">
+                secondTime = #{secondtime,jdbcType=VARCHAR},
+            </if>
+            <if test="aftype != null">
+                afType = #{aftype,jdbcType=VARCHAR},
+            </if>
+            <if test="isafb != null">
+                isAfb = #{isafb,jdbcType=VARCHAR},
+            </if>
+            <if test="ispla != null">
+                isPla = #{ispla,jdbcType=VARCHAR},
+            </if>
+            <if test="isuca != null">
+                isuca = #{isuca,jdbcType=VARCHAR},
+            </if>
+            <if test="rrtimes != null">
+                rrTimes = #{rrtimes,jdbcType=VARCHAR},
+            </if>
+            <if test="zrltimes != null">
+                zrlTimes = #{zrltimes,jdbcType=VARCHAR},
+            </if>
+            <if test="rgltimes != null">
+                rglTimes = #{rgltimes,jdbcType=VARCHAR},
+            </if>
+            <if test="wst != null">
+                wst = #{wst,jdbcType=VARCHAR},
+            </if>
+            <if test="wsc != null">
+                wsc = #{wsc,jdbcType=VARCHAR},
+            </if>
+            <if test="hchild != null">
+                hchild = #{hchild,jdbcType=VARCHAR},
+            </if>
+            <if test="childages != null">
+                childAges = #{childages,jdbcType=VARCHAR},
+            </if>
+            <if test="childheal != null">
+                childHeal = #{childheal,jdbcType=VARCHAR},
+            </if>
+            <if test="infectiousdis != null">
+                infectiousDis = #{infectiousdis,jdbcType=VARCHAR},
+            </if>
+            <if test="dtime != null">
+                dTime = #{dtime,jdbcType=VARCHAR},
+            </if>
+            <if test="dauthor != null">
+                dAuthor = #{dauthor,jdbcType=VARCHAR},
+            </if>
+            <if test="drship != null">
+                drShip = #{drship,jdbcType=VARCHAR},
+            </if>
+            <if test="hosno != null">
+                hosNo = #{hosno,jdbcType=VARCHAR},
+            </if>
+            <if test="apgar != null">
+                apgar = #{apgar,jdbcType=VARCHAR},
+            </if>
+            <if test="fatherAge != null">
+                father_age = #{fatherAge,jdbcType=VARCHAR},
+            </if>
+            <if test="predelivery != null">
+                predelivery = #{predelivery,jdbcType=VARCHAR},
+            </if>
+            <if test="cesareanSection != null">
+                cesarean_section = #{cesareanSection,jdbcType=VARCHAR},
+            </if>
+            <if test="prematureBirth != null">
+                premature_birth = #{prematureBirth,jdbcType=VARCHAR},
+            </if>
+            <if test="bedNumber != null">
+                bed_number = #{bedNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="birthTime != null">
+                birth_time = #{birthTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="noticeId != null">
+                noticeId = #{noticeId,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null">
+                contactPhone = #{contactPhone,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

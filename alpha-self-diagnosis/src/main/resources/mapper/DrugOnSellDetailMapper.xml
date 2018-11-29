@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DrugOnSellDetail">
+
+
+    <select id="queryByKeyword" parameterType="HashMap" resultType="DataRecord">
+        SELECT
+			id,
+			c001,
+			c002,
+			c003,
+			c004,
+			c005,
+			c006,
+			c007,
+			c008,
+			c009,
+			c010,
+			c011,
+			c012,
+			c013,
+			c014,
+			c015,
+			c016,
+			threshold,
+			user_select_count,
+			createdDate,
+			default_order,
+			enable_,
+			c017,
+			c018,
+			c019,
+			c020,
+			c021,
+			c022,
+			c023,
+			c024,
+			c025,
+			c026,
+			c027,
+			c028,
+			c029,
+			c030,
+			c031,
+			c032,
+			c033,
+			c034,
+			c035,
+			c036,
+			c037,
+			c038,
+			c039,
+			c040,
+			c041,
+			c042,
+			c043,
+			c044,
+			c045,
+			c046,
+			c047,
+			c048,
+			incre_flag,
+			opera_flag,
+			operate_type,
+			data_version,
+			version_evolution
+		FROM zhys_drug
+        WHERE
+			1=1
+        	<if test="keyword != null and keyword !='' ">
+        		and c007 like CONCAT('%',#{keyword},'%')
+        	</if>
+        limit 0,30
+    </select>
+
+	<select id="queryByDrugCode" parameterType="HashMap" resultType="DataRecord">
+        SELECT * FROM zhys_drug where c003 = #{drugCode} 
+    </select>
+    
+    <!-- 根据用户行为获取热门药品 -->
+	<select id="getUserHotDrug" parameterType="HashMap" resultType="DataRecord">
+		SELECT * from zhys_drug zd where zd.threshold > #{threshold} 
+		 AND IFNULL(zd.user_select_count,0) > zd.threshold ORDER BY zd.user_select_count DESC LIMIT 0,#{size}
+	</select>
+	<!-- 获取默认热门药品 -->
+	<select id="getDefaultHotDrug" parameterType="HashMap" resultType="DataRecord">
+		SELECT * from zhys_drug zd ORDER BY zd.default_order DESC LIMIT 0,#{size}
+	</select>
+	<!-- 根据疾病名称查询 -->
+	<select id="getByDrugName" parameterType="HashMap" resultType="DataRecord">
+		SELECT * from zhys_drug zd where c007 = #{drugName}
+	</select>
+</mapper>

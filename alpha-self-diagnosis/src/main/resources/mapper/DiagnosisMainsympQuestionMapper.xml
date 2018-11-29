@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainsympQuestion">
+    <resultMap id="diagnosisMainsympQuestion" type="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainsympQuestion">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="question_code" jdbcType="VARCHAR" property="questionCode"/>
+        <result column="main_symp_code" jdbcType="VARCHAR" property="mainSympCode"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="popu_title" jdbcType="VARCHAR" property="popuTitle"/>
+        <result column="gender" jdbcType="INTEGER" property="gender"/>
+        <result column="min_age" jdbcType="INTEGER" property="minAge"/>
+        <result column="max_age" jdbcType="INTEGER" property="maxAge"/>
+        <result column="default_order" jdbcType="INTEGER" property="defaultOrder"/>
+        <result column="question_type" jdbcType="INTEGER" property="questionType"/>
+        <result column="display_range" jdbcType="VARCHAR" property="displayRange"/>
+        <result column="display_default" jdbcType="VARCHAR" property="displayDefault"/>
+        <result column="display_type" jdbcType="VARCHAR" property="displayType"/>
+        <result column="parse_class" jdbcType="VARCHAR" property="parseClass"/>
+        <result column="incre_flag" jdbcType="VARCHAR" property="increFlag"/>
+        <result column="opera_flag" jdbcType="VARCHAR" property="operaFlag"/>
+        <result column="operate_type" jdbcType="VARCHAR" property="operateType"/>
+        <result column="data_version" jdbcType="INTEGER" property="dataVersion"/>
+        <result column="version_evolution" jdbcType="VARCHAR" property="versionEvolution"/>
+    </resultMap>
+
+    <!-- 查询主症状下的所有问题 -->
+    <select id="queryDiagnosisMainsympQuestion" resultType="DataRecord" parameterType="HashMap">
+      select * from diagnosis_mainsymp_question where main_symp_code=#{mainSympCode}
+    </select>
+
+    <select id="queryDiagnosisMainsympQuestionAll" resultType="DataRecord" parameterType="HashMap">
+        select * from diagnosis_mainsymp_question where ifnull(operate_type, '') not in ('D', 'H')
+    </select>
+
+    <!-- 查询主症状下的未回答问题 -->
+    <select id="queryUntreatedQuestion" resultType="DataRecord" parameterType="HashMap">
+      <!-- select * from diagnosis_mainsymp_question where is_show>0 and main_symp_code=#{mainSympCode} and default_order>#{defaultOrder} order by default_order ASC -->
+      <!--  查询主症状下的未回答问题,(包括有依赖的隐藏问题) -->
+      select * from diagnosis_mainsymp_question where main_symp_code=#{mainSympCode}
+       and default_order>#{defaultOrder}
+       and (is_show > 0 OR char_length(dependency_question_code) > 0)
+       order by default_order ASC
+    </select>
+    <!-- 查询主症状下的所有自动计算问题(年龄、季节) -->
+    <select id="queryAutoQuestion" resultType="DataRecord" parameterType="HashMap">
+      select * from diagnosis_mainsymp_question where main_symp_code=#{mainSympCode} and is_show=0 and question_type in(103,104)
+    </select>
+
+    <!--查询下一个问题 -->
+    <select id="getDiagnosisMainsympQuestion" resultMap="diagnosisMainsympQuestion" parameterType="HashMap">
+      select * from diagnosis_mainsymp_question where is_show>0 and  main_symp_code=#{mainSympCode} and default_order>#{defaultOrder} order by default_order ASC limit 1
+    </select>
+
+    <!--查询单个问题 -->
+    <select id="getQuestionByCode" resultType="com.alpha.server.rpc.diagnosis.pojo.DiagnosisMainsympQuestion" parameterType="HashMap">
+      select dmq.question_code questionCode,dmq.main_symp_code mainSympCode,dmq.title title, dmq.popu_title popuTitle,
+          dmq.gender gender, dmq.min_age minAge, dmq.max_age maxAge, dmq.default_order defaultOrder, dmq.question_type questionType,
+          dmq.display_type displayType, dmq.parse_class parseClass,dmq.dependency_question_code dependencyQuestionCode,dmq.is_show showFlag,
+          dmq.is_additional isAdditional,dmq.maual_order maualOrder,dmq.display_range displayRange,display_default displayDefault
+      from diagnosis_mainsymp_question dmq INNER join diagnosis_main_symptoms dms on(dms.symp_code=dmq.main_symp_code)
+      <where>
+          <if test = "questionCode != null">
+              and dmq.question_code=#{questionCode}
+          </if>
+          <if test = "mainSympCode != null">
+              and dmq.main_symp_code = #{mainSympCode}
+          </if>
+      </where>
+    </select>
+
+    <!--查询多个问题 -->
+    <select id="queryDiseaseQuestion" resultType="DataRecord" parameterType="HashMap">
+      select dmq.id,dmq.question_code,dmq.main_symp_code,dmq.title,dmq.popu_title,dmq.gender,dmq.min_age,dmq.max_age,dmq.default_order,dmq.question_type,ddmq.disease_code,ddmq.question_order,ddmq.weight
+      from diagnosis_mainsymp_question dmq
+      left join diagnosis_disease_mainsym_question ddmq on(ddmq.main_sym_code=dmq.main_symp_code and dmq.question_code=ddmq.question_code)
+      where dmq.main_symp_code=  #{mainSympCode}
+    </select>
+    <!--查询疾病下每个问题对应的答案总数量 -->
+    <select id="queryAnswerCount" resultType="DataRecord" parameterType="HashMap">
+      select dmq.*,dqa.disease_code,count(dqa.answer_code) answer_total from  diagnosis_mainsymp_question dmq
+        INNER join diagnosis_question_answer dqa on(dmq.question_code=dqa.question_code)
+        where dmq.main_symp_code= #{mainSympCode}
+        group by dqa.question_code,dqa.disease_code
+        order by answer_total desc
+    </select>
+
+	<!--查询疾病下伴随症状总数量 -->
+    <select id="queryConcSymptomCount" resultType="DataRecord" parameterType="HashMap">
+     select dmq.*,dqa.disease_code,count(dqa.conc_symp_code) answer_total from  diagnosis_mainsymp_question dmq
+        INNER join diagnosis_mainsymp_concsymp dqa on(dmq.main_symp_code=dqa.main_symp_code)
+        where dmq.main_symp_code= #{mainSympCode} and dmq.question_type = 102
+        group by dqa.main_symp_code,dqa.disease_code
+        order by answer_total desc
+    </select>
+</mapper>
